@@ -8,6 +8,7 @@ class Console extends StatefulWidget {
     Key key,
   }) : super(key: key);
 
+  @override
   _ConsoleState createState() => _ConsoleState();
 }
 

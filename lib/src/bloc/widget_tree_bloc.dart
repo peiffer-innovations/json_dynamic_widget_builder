@@ -20,6 +20,8 @@ class WidgetTreeBloc {
   }
 
   set widget(JsonWidgetData widget) {
+    _current = null;
+
     if (widget == null) {
       _widget = null;
     } else {
@@ -34,49 +36,54 @@ class WidgetTreeBloc {
     _controller = null;
   }
 
-  // void add(JsonWidgetData parent, JsonWidgetData widget) {
-  //   if (parent == null) {
-  //     _widget = widget;
-  //   } else {
-  //     parent.children.add(widget);
-  //   }
+  dynamic findInValues(dynamic values, JsonWidgetData widget) {
+    dynamic result;
 
-  //   _controller?.add(null);
-  // }
-
-  JsonSchema getSchema(String schemaId) {
-    RefProvider refProvider;
-    refProvider = (String ref) {
-      var schema = SchemaCache().getSchema(ref);
-      if (schema == null) {
-        throw Exception('Unable to find schema: $ref');
+    if (values is Map) {
+      if (values['id'] == widget.id && values['type'] == widget.type) {
+        result = values;
+      } else {
+        values?.forEach((key, value) {
+          result ??= findInValues(value, widget);
+        });
       }
+    } else if (values is List) {
+      for (var v in values) {
+        result = findInValues(v, widget);
+        if (result != null) {
+          break;
+        }
+      }
+    }
 
-      return JsonSchema.createSchema(
-        schema,
-        refProvider: refProvider,
-      );
-    };
+    return result;
+  }
 
-    var schemaData = SchemaCache().getSchema(schemaId);
-    assert(schemaData != null, 'Cannot find schema: $schemaId');
-    var jsonSchema = JsonSchema.createSchema(
-      schemaData,
-      refProvider: refProvider,
-    );
+  JsonWidgetData addWidget(JsonWidgetData parent, JsonWidgetData widget) {
+    var children =
+        List<JsonWidgetData>.from(parent.children ?? <JsonWidgetData>[]);
 
-    return jsonSchema;
+    children.add(widget);
+
+    var newParent = parent.copyWith(children: children);
+
+    return replace(parent, newParent);
   }
 
   void notify() {
     _controller?.add(null);
   }
 
-  void remove(JsonWidgetData parent, JsonWidgetData widget) {
-    if (parent == null) {
-      _widget = null;
-    } else {
-      parent.children.remove(widget);
+  JsonWidgetData replace(JsonWidgetData oldWidget, [JsonWidgetData newWidget]) {
+    var values = _widget.toJson();
+
+    var toReplace = findInValues(values, oldWidget);
+    toReplace.clear();
+
+    if (newWidget != null) {
+      toReplace.putAll(newWidget.toJson());
     }
+
+    return JsonWidgetData.fromDynamic(values);
   }
 }

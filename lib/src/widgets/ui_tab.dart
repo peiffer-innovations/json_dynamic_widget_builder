@@ -8,10 +8,14 @@ import 'package:provider/provider.dart';
 class UiTab extends StatefulWidget {
   UiTab({
     this.all = true,
+    this.leftAlign = true,
+    this.topAlign = true,
     Key key,
   }) : super(key: key);
 
   final bool all;
+  final bool leftAlign;
+  final bool topAlign;
 
   @override
   _UiTabState createState() => _UiTabState();
@@ -72,7 +76,18 @@ class _UiTabState extends State<UiTab> {
 
   @override
   Widget build(BuildContext context) {
-    return _built ??
+    return SizedBox.expand(
+          child: Container(
+            alignment: widget.leftAlign == true
+                ? widget.topAlign == true
+                    ? Alignment.topLeft
+                    : Alignment.centerLeft
+                : widget.topAlign == true
+                    ? Alignment.topCenter
+                    : Alignment.center,
+            child: _built,
+          ),
+        ) ??
         Center(
           child: Padding(
             padding: EdgeInsets.all(16.0),
