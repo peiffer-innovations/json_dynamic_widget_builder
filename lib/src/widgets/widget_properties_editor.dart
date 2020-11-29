@@ -92,9 +92,6 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                       },
                       child: MultiPropertyEditor(
                         id: id,
-                        onChanged: (values) {
-                          _values = values;
-                        },
                         schema: _schema,
                         values: _values,
                       ),

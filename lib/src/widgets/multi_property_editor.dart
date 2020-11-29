@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:json_class/json_class.dart';
@@ -11,7 +10,6 @@ class MultiPropertyEditor extends StatefulWidget {
   MultiPropertyEditor({
     @required this.id,
     Key key,
-    @required this.onChanged,
     @required this.schema,
     @required this.values,
   })  : assert(id?.isNotEmpty == true),
@@ -19,7 +17,6 @@ class MultiPropertyEditor extends StatefulWidget {
         super(key: key);
 
   final String id;
-  final ValueChanged<dynamic> onChanged;
   final JsonSchema schema;
   final dynamic values;
 
@@ -145,11 +142,6 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
             MaterialPageRoute(
               builder: (BuildContext context) => MultiPropertyEditor(
                 id: key,
-                onChanged: (value) {
-                  _values[key] = value;
-                  widget.onChanged(_values);
-                  setState(() {});
-                },
                 schema: objRef,
                 values: _values[key] ?? <String, dynamic>{},
               ),
@@ -173,12 +165,10 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
           DropdownMenuItem(value: false, child: Text('false')),
         ],
         onChanged: (value) {
-          _values = value == 'null' ? null : value;
-          widget.onChanged(_values);
+          _values[key] = value == 'null' ? null : value;
         },
         onSaved: (value) {
-          _values = value == 'null' ? null : value;
-          widget.onChanged(_values);
+          _values[key] = value == 'null' ? null : value;
         },
         value:
             _values[key] == null ? 'null' : JsonClass.parseBool(_values[key]),
@@ -194,12 +184,10 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
           ],
         ],
         onChanged: (value) {
-          _values = value == 'null' ? null : value;
-          widget.onChanged(_values);
+          _values[key] = value == 'null' ? null : value;
         },
         onSaved: (value) {
-          _values = value == 'null' ? null : value;
-          widget.onChanged(_values);
+          _values[key] = value == 'null' ? null : value;
         },
         value: _values[key] ?? 'null',
       );
@@ -212,12 +200,10 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
                 : _values[key])
             ?.toString(),
         onChanged: (value) {
-          _values = value;
-          widget.onChanged(_values);
+          _values[key] = value;
         },
         onSaved: (value) {
-          _values = value == 'null' ? null : value;
-          widget.onChanged(_values);
+          _values[key] = value == 'null' ? null : value;
         },
         validator: (String value) {
           String error;

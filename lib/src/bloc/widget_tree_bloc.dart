@@ -81,7 +81,7 @@ class WidgetTreeBloc {
     toReplace.clear();
 
     if (newWidget != null) {
-      toReplace.putAll(newWidget.toJson());
+      toReplace.addAll(newWidget.toJson());
     }
 
     return JsonWidgetData.fromDynamic(values);

@@ -1,4 +1,4 @@
-## [1.0.0] - November 22nd, 2020
+## [0.0.1] - November 22nd, 2020
 
 
 * Initial release
