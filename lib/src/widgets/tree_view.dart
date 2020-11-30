@@ -152,27 +152,21 @@ class _TreeViewState extends State<TreeView>
                               Flexible(
                                 child: ClipRect(
                                   child: RaisedButton.icon(
+                                    color: Colors.redAccent,
                                     icon: Flexible(
                                       child: ClipRect(
-                                        child: Icon(Icons.edit),
+                                        child: Icon(Icons.delete),
                                       ),
                                     ),
                                     label: Flexible(
                                       child: Text(
-                                        'EDIT',
+                                        'REMOVE WIDGET',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     onPressed: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              WidgetPropertiesEditor(
-                                            data: _widgetTreeBloc.current,
-                                          ),
-                                        ),
-                                      );
+                                      _widgetTreeBloc.current = null;
                                     },
                                   ),
                                 ),
@@ -201,21 +195,27 @@ class _TreeViewState extends State<TreeView>
                               Flexible(
                                 child: ClipRect(
                                   child: RaisedButton.icon(
-                                    color: Colors.redAccent,
                                     icon: Flexible(
                                       child: ClipRect(
-                                        child: Icon(Icons.delete),
+                                        child: Icon(Icons.edit),
                                       ),
                                     ),
                                     label: Flexible(
                                       child: Text(
-                                        'REMOVE WIDGET',
+                                        'EDIT',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     onPressed: () {
-                                      _widgetTreeBloc.current = null;
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              WidgetPropertiesEditor(
+                                            data: _widgetTreeBloc.current,
+                                          ),
+                                        ),
+                                      );
                                     },
                                   ),
                                 ),

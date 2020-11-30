@@ -26,6 +26,7 @@ class _UiTabState extends State<UiTab> {
   final List<StreamSubscription> _subscriptions = [];
 
   Widget _built;
+  UniqueKey _uniqueKey = UniqueKey();
   WidgetTreeBloc _widgetTreeBloc;
 
   @override
@@ -58,13 +59,14 @@ class _UiTabState extends State<UiTab> {
   void _rebuild() {
     try {
       var widget = this.widget.all == true
-          ? _widgetTreeBloc.widget
+          ? _widgetTreeBloc.widget ?? _widgetTreeBloc.current
           : _widgetTreeBloc.current;
       if (widget == null) {
         _built = null;
       } else {
         _built = widget.build(context: context);
       }
+      _uniqueKey = UniqueKey();
     } catch (e, stack) {
       _logger.info('Error building widget', e, stack);
     }
@@ -76,23 +78,25 @@ class _UiTabState extends State<UiTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
-          child: Container(
-            alignment: widget.leftAlign == true
-                ? widget.topAlign == true
-                    ? Alignment.topLeft
-                    : Alignment.centerLeft
-                : widget.topAlign == true
-                    ? Alignment.topCenter
-                    : Alignment.center,
-            child: _built,
-          ),
-        ) ??
-        Center(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text('ADD WIDGET'),
-          ),
-        );
+    return _built != null
+        ? SizedBox.expand(
+            child: Container(
+              key: _uniqueKey,
+              alignment: widget.leftAlign == true
+                  ? widget.topAlign == true
+                      ? Alignment.topLeft
+                      : Alignment.centerLeft
+                  : widget.topAlign == true
+                      ? Alignment.topCenter
+                      : Alignment.center,
+              child: _built,
+            ),
+          )
+        : Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text('ADD WIDGET'),
+            ),
+          );
   }
 }

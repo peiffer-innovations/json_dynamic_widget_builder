@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart';
-import 'package:json_dynamic_widget/json_dynamic_widget_schemas.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/schema_bloc.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:logging/logging.dart';
@@ -33,8 +32,10 @@ class _SchemaViewState extends State<SchemaView> {
     var schemaBloc = context.read<SchemaBloc>();
 
     _subscriptions.add(schemaBloc.stream.listen((event) {
-      _current = schemaBloc.current;
-      _loadData();
+      if (_current?.id?.toString() != schemaBloc.current?.id?.toString()) {
+        _current = schemaBloc.current;
+        _loadData();
+      }
     }));
     _current = schemaBloc.current;
 
@@ -68,6 +69,7 @@ class _SchemaViewState extends State<SchemaView> {
         }
       } catch (e) {
         _markdown = 'ERROR: loading help for schema -- ${_current.id}';
+        _logger.info('ERROR loading help file: ${_current.id}', e);
       }
     }
 

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
-import 'package:json_schema/json_schema.dart';
-import 'package:json_theme/json_theme_schemas.dart';
+// import 'package:json_schema/json_schema.dart';
+// import 'package:json_theme/json_theme_schemas.dart';
 
 class WidgetTreeBloc {
   StreamController<void> _controller = StreamController<void>.broadcast();
@@ -20,12 +20,18 @@ class WidgetTreeBloc {
   }
 
   set widget(JsonWidgetData widget) {
-    _current = null;
-
     if (widget == null) {
       _widget = null;
     } else {
       _widget = widget;
+    }
+
+    if (_current != null && _widget != null) {
+      _current = findInWidget(
+        _widget,
+        _current.id,
+        _current.type,
+      );
     }
 
     _controller.add(null);
@@ -34,6 +40,17 @@ class WidgetTreeBloc {
   void dispose() {
     _controller?.close();
     _controller = null;
+  }
+
+  JsonWidgetData addWidget(JsonWidgetData parent, JsonWidgetData widget) {
+    var children =
+        List<JsonWidgetData>.from(parent.children ?? <JsonWidgetData>[]);
+
+    children.add(widget);
+
+    var newParent = parent.copyWith(children: children);
+
+    return replace(parent, newParent);
   }
 
   dynamic findInValues(dynamic values, JsonWidgetData widget) {
@@ -59,15 +76,22 @@ class WidgetTreeBloc {
     return result;
   }
 
-  JsonWidgetData addWidget(JsonWidgetData parent, JsonWidgetData widget) {
-    var children =
-        List<JsonWidgetData>.from(parent.children ?? <JsonWidgetData>[]);
+  JsonWidgetData findInWidget(
+    JsonWidgetData widget,
+    String id,
+    String type,
+  ) {
+    JsonWidgetData result;
 
-    children.add(widget);
+    if (widget?.id == id && widget?.type == type) {
+      result = widget;
+    } else {
+      widget?.children?.forEach((sub) {
+        result ??= findInWidget(sub, id, type);
+      });
+    }
 
-    var newParent = parent.copyWith(children: children);
-
-    return replace(parent, newParent);
+    return result;
   }
 
   void notify() {
