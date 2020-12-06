@@ -90,6 +90,11 @@ class _UiTabState extends State<UiTab> {
         );
         return Center(
           child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white,
+              ),
+            ),
             alignment: widget.leftAlign == true
                 ? widget.topAlign == true
                     ? Alignment.topLeft
