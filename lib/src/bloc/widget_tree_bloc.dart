@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
-import 'package:json_schema/json_schema.dart';
-import 'package:json_theme/json_theme_schemas.dart';
 
 class WidgetTreeBloc {
   StreamController<void> _controller = StreamController<void>.broadcast();

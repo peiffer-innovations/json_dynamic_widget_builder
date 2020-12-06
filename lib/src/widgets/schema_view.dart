@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart';
-import 'package:json_dynamic_widget/json_dynamic_widget_schemas.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/schema_bloc.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:logging/logging.dart';
