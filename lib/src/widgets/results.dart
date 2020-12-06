@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/animated_indexed_stack.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/json_tab.dart';
@@ -15,7 +17,7 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
   bool _all = true;
   bool _leftAlign = false;
   bool _topAlign = false;
-  bool _horizontal = false;
+  bool _landscape = true;
   int _wideRatio = 16;
   int _highRatio = 9;
   int _index = 0;
@@ -129,6 +131,8 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                           int.tryParse(ratio[0]) ?? _wideRatio;
                                       _highRatio =
                                           int.tryParse(ratio[1]) ?? _highRatio;
+
+                                      _landscape = _wideRatio > _highRatio;
                                     });
                                   }
                                 },
@@ -159,21 +163,29 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                             child: ToggleButtons(
                               borderRadius: BorderRadius.circular(32.0),
                               isSelected: [
-                                _horizontal,
-                                !_horizontal,
+                                _landscape,
+                                !_landscape,
                               ],
                               onPressed: (int index) {
-                                _horizontal = index == 0;
-                                setState(() {});
+                                _landscape = index == 0;
+                                setState(() {
+                                  var temp = [_highRatio, _wideRatio];
+                                  _highRatio = _landscape
+                                      ? min(temp[0], temp[1])
+                                      : max(temp[0], temp[1]);
+                                  _wideRatio = _landscape
+                                      ? max(temp[0], temp[1])
+                                      : min(temp[0], temp[1]);
+                                });
                               },
                               children: [
                                 Padding(
                                   padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.stay_current_portrait),
+                                  child: Icon(Icons.stay_current_landscape),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.stay_current_landscape),
+                                  child: Icon(Icons.stay_current_portrait),
                                 ),
                               ],
                             ),
