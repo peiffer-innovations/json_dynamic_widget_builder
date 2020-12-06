@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/widget_tree_bloc.dart';
@@ -76,7 +77,15 @@ class _UiTabState extends State<UiTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
+    const wide = 9;
+    const high = 16;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final ratio = min(
+          constraints.maxWidth / wide,
+          constraints.maxHeight / high,
+        );
+        return Center(
           child: Container(
             alignment: widget.leftAlign == true
                 ? widget.topAlign == true
@@ -85,14 +94,18 @@ class _UiTabState extends State<UiTab> {
                 : widget.topAlign == true
                     ? Alignment.topCenter
                     : Alignment.center,
-            child: _built,
-          ),
-        ) ??
-        Center(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text('ADD WIDGET'),
+            height: ratio * high,
+            width: ratio * wide,
+            child: _built ??
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('ADD WIDGET'),
+                  ),
+                ),
           ),
         );
+      },
+    );
   }
 }
