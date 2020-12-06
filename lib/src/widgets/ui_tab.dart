@@ -9,14 +9,19 @@ import 'package:provider/provider.dart';
 class UiTab extends StatefulWidget {
   UiTab({
     this.all = true,
+    this.highRatio = 9,
     this.leftAlign = true,
     this.topAlign = true,
+    this.wideRatio = 16,
     Key key,
   }) : super(key: key);
 
   final bool all;
+  final int highRatio;
   final bool leftAlign;
+
   final bool topAlign;
+  final int wideRatio;
 
   @override
   _UiTabState createState() => _UiTabState();
@@ -77,13 +82,11 @@ class _UiTabState extends State<UiTab> {
 
   @override
   Widget build(BuildContext context) {
-    const wide = 9;
-    const high = 16;
     return LayoutBuilder(
       builder: (context, constraints) {
         final ratio = min(
-          constraints.maxWidth / wide,
-          constraints.maxHeight / high,
+          constraints.maxWidth / widget.wideRatio,
+          constraints.maxHeight / widget.highRatio,
         );
         return Center(
           child: Container(
@@ -94,8 +97,8 @@ class _UiTabState extends State<UiTab> {
                 : widget.topAlign == true
                     ? Alignment.topCenter
                     : Alignment.center,
-            height: ratio * high,
-            width: ratio * wide,
+            height: ratio * widget.highRatio,
+            width: ratio * widget.wideRatio,
             child: _built ??
                 Center(
                   child: Padding(
