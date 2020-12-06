@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/animated_indexed_stack.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/json_tab.dart';
@@ -15,6 +17,9 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
   bool _all = true;
   bool _leftAlign = false;
   bool _topAlign = false;
+  bool _landscape = true;
+  int _wideRatio = 16;
+  int _highRatio = 9;
   int _index = 0;
 
   @override
@@ -25,6 +30,69 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<List<String>> _showAspectRatioDialog() async {
+    final result = await showDialog<List<String>>(
+      builder: (context) {
+        var _dialogWide = '$_wideRatio';
+        var _dialogHigh = '$_highRatio';
+
+        return AlertDialog(
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(
+                [_dialogWide, _dialogHigh],
+              ),
+              child: Text('Ok'),
+            ),
+          ],
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 50.0,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Wide',
+                  ),
+                  initialValue: _dialogWide,
+                  keyboardType: TextInputType.number,
+                  onChanged: (changed) {
+                    _dialogWide = changed;
+                  },
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Text(':'),
+              SizedBox(
+                width: 50.0,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'High',
+                  ),
+                  initialValue: _dialogHigh,
+                  keyboardType: TextInputType.number,
+                  onChanged: (changed) {
+                    _dialogHigh = changed;
+                  },
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+          title: Text('Select the Aspect Ratio'),
+        );
+      },
+      context: context,
+    );
+
+    return result;
   }
 
   @override
@@ -47,9 +115,82 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       height: kToolbarHeight,
-                      width: 720,
                       child: Row(
                         children: [
+                          AnimatedOpacity(
+                            duration: Duration(milliseconds: 300),
+                            opacity: _index == 0 ? 1.0 : 0.0,
+                            child: SizedBox(
+                              height: 50.0,
+                              child: OutlinedButton(
+                                onPressed: () async {
+                                  final ratio = await _showAspectRatioDialog();
+                                  if (ratio != null && ratio?.length == 2) {
+                                    setState(() {
+                                      _wideRatio =
+                                          int.tryParse(ratio[0]) ?? _wideRatio;
+                                      _highRatio =
+                                          int.tryParse(ratio[1]) ?? _highRatio;
+
+                                      _landscape = _wideRatio > _highRatio;
+                                    });
+                                  }
+                                },
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                  side: MaterialStateProperty.all(
+                                    BorderSide(
+                                      color: Colors.grey[800],
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.aspect_ratio_outlined,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16.0),
+                          AnimatedOpacity(
+                            duration: Duration(milliseconds: 300),
+                            opacity: _index == 0 ? 1.0 : 0.0,
+                            child: ToggleButtons(
+                              borderRadius: BorderRadius.circular(32.0),
+                              isSelected: [
+                                _landscape,
+                                !_landscape,
+                              ],
+                              onPressed: (int index) {
+                                _landscape = index == 0;
+                                setState(() {
+                                  var temp = [_highRatio, _wideRatio];
+                                  _highRatio = _landscape
+                                      ? min(temp[0], temp[1])
+                                      : max(temp[0], temp[1]);
+                                  _wideRatio = _landscape
+                                      ? max(temp[0], temp[1])
+                                      : min(temp[0], temp[1]);
+                                });
+                              },
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Icon(Icons.stay_current_landscape),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Icon(Icons.stay_current_portrait),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 16.0),
                           AnimatedOpacity(
                             duration: Duration(milliseconds: 300),
                             opacity: _index == 0 ? 1.0 : 0.0,
@@ -171,8 +312,10 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
               children: [
                 UiTab(
                   all: _all,
+                  highRatio: _highRatio,
                   leftAlign: _leftAlign,
                   topAlign: _topAlign,
+                  wideRatio: _wideRatio,
                 ),
                 JsonTab(all: _all),
                 VariablesTab(),

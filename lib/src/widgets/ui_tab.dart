@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/widget_tree_bloc.dart';
@@ -8,14 +9,19 @@ import 'package:provider/provider.dart';
 class UiTab extends StatefulWidget {
   UiTab({
     this.all = true,
+    this.highRatio = 9,
     this.leftAlign = true,
     this.topAlign = true,
+    this.wideRatio = 16,
     Key key,
   }) : super(key: key);
 
   final bool all;
+  final int highRatio;
   final bool leftAlign;
+
   final bool topAlign;
+  final int wideRatio;
 
   @override
   _UiTabState createState() => _UiTabState();
@@ -78,25 +84,39 @@ class _UiTabState extends State<UiTab> {
 
   @override
   Widget build(BuildContext context) {
-    return _built != null
-        ? SizedBox.expand(
-            child: Container(
-              key: _uniqueKey,
-              alignment: widget.leftAlign == true
-                  ? widget.topAlign == true
-                      ? Alignment.topLeft
-                      : Alignment.centerLeft
-                  : widget.topAlign == true
-                      ? Alignment.topCenter
-                      : Alignment.center,
-              child: _built,
+    return LayoutBuilder(
+      key: _uniqueKey,
+      builder: (context, constraints) {
+        final ratio = min(
+          constraints.maxWidth / widget.wideRatio,
+          constraints.maxHeight / widget.highRatio,
+        );
+        return Center(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white,
+              ),
             ),
-          )
-        : Center(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('ADD WIDGET'),
-            ),
-          );
+            alignment: widget.leftAlign == true
+                ? widget.topAlign == true
+                    ? Alignment.topLeft
+                    : Alignment.centerLeft
+                : widget.topAlign == true
+                    ? Alignment.topCenter
+                    : Alignment.center,
+            height: ratio * widget.highRatio,
+            width: ratio * widget.wideRatio,
+            child: _built ??
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('ADD WIDGET'),
+                  ),
+                ),
+          ),
+        );
+      },
+    );
   }
 }
