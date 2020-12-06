@@ -32,8 +32,10 @@ class _SchemaViewState extends State<SchemaView> {
     var schemaBloc = context.read<SchemaBloc>();
 
     _subscriptions.add(schemaBloc.stream.listen((event) {
-      _current = schemaBloc.current;
-      _loadData();
+      if (_current?.id?.toString() != schemaBloc.current?.id?.toString()) {
+        _current = schemaBloc.current;
+        _loadData();
+      }
     }));
     _current = schemaBloc.current;
 
@@ -67,6 +69,7 @@ class _SchemaViewState extends State<SchemaView> {
         }
       } catch (e) {
         _markdown = 'ERROR: loading help for schema -- ${_current.id}';
+        _logger.info('ERROR loading help file: ${_current.id}', e);
       }
     }
 

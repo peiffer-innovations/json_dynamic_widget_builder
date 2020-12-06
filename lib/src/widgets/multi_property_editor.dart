@@ -2,7 +2,9 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:json_class/json_class.dart';
+import 'package:json_dynamic_widget/json_dynamic_widget_schemas.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/schema_bloc.dart';
+import 'package:json_dynamic_widget_builder/src/widgets/supported_widgets_list.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:provider/provider.dart';
 
@@ -49,11 +51,19 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
       if (value.ref != null) {
         value = _schemaBloc.getSchema(value.ref.toString());
       }
-      properties.add(_getFormWidget(key, value));
+      properties.add(_getFormWidget(
+        key,
+        value,
+        parent: schema,
+      ));
     });
 
     if (properties?.isNotEmpty != true) {
-      properties.add(_getFormWidget(widget.id, schema));
+      properties.add(_getFormWidget(
+        widget.id,
+        schema,
+        parent: schema,
+      ));
     }
 
     _properties = properties;
@@ -76,11 +86,16 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
     return props;
   }
 
-  Widget _getFormWidget(String key, JsonSchema schema) {
+  Widget _getFormWidget(
+    String key,
+    JsonSchema schema, {
+    JsonSchema parent,
+  }) {
     Widget result;
     var enumValues = <String>{};
     var isBool = false;
     var isNumber = false;
+    JsonSchema dynWidgetRef;
     JsonSchema objRef;
 
     // var props = _getAllProperties(schema);
@@ -89,6 +104,11 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
       if (schema.ref != null) {
         schema = _schemaBloc.getSchema(schema.ref.toString());
       }
+
+      if (schema.id.toString() == JsonWidgetDataSchema.id) {
+        dynWidgetRef = schema;
+      }
+
       if (schema.enumValues?.isNotEmpty == true) {
         enumValues.addAll(List<String>.from(schema.enumValues));
       }
@@ -135,7 +155,37 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
     schema.allOf?.forEach((s) => checkSchema(s));
     schema.oneOf?.forEach((s) => checkSchema(s));
 
-    if (objRef != null) {
+    if (dynWidgetRef != null) {
+      result = ListTile(
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) => SupportedWidgetsList(
+                values: _values[key] ?? <String, dynamic>{},
+              ),
+            ),
+          );
+
+          _schemaBloc.current = widget.schema;
+          if (mounted == true) {
+            setState(() {});
+          }
+        },
+        subtitle: _values[key] == null
+            ? null
+            : Text(
+                _values[key].toString(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+        title: Text(
+          key,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Icon(Icons.chevron_right),
+      );
+    } else if (objRef != null) {
       result = ListTile(
         onTap: () async {
           await Navigator.of(context).push(
@@ -153,7 +203,18 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
             setState(() {});
           }
         },
-        title: Text(key),
+        subtitle: _values[key] == null
+            ? null
+            : Text(
+                _values[key].toString(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+        title: Text(
+          key,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: Icon(Icons.chevron_right),
       );
     } else if (isBool == true) {
@@ -175,6 +236,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
       );
     } else if (enumValues?.isNotEmpty == true) {
       result = DropdownButtonFormField(
+        autovalidateMode: AutovalidateMode.always,
         decoration: InputDecoration(labelText: key),
         items: [
           DropdownMenuItem(value: 'null', child: Text('')),
@@ -190,6 +252,21 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
           _values[key] = value == 'null' ? null : value;
         },
         value: _values[key] ?? 'null',
+        validator: (dynamic value) {
+          String error;
+
+          if ('null' == value) {
+            value = null;
+          }
+
+          if (parent?.requiredProperties?.contains(key) == true &&
+              value is String &&
+              value?.isNotEmpty != true) {
+            error = '$key is a required field';
+          }
+
+          return error;
+        },
       );
     } else {
       result = TextFormField(
@@ -200,10 +277,10 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
                 : _values[key])
             ?.toString(),
         onChanged: (value) {
-          _values[key] = value;
+          _values[key] = value?.isNotEmpty == true ? value : null;
         },
         onSaved: (value) {
-          _values[key] = value == 'null' ? null : value;
+          _values[key] = value?.isNotEmpty == true ? value : null;
         },
         validator: (String value) {
           String error;
@@ -212,6 +289,11 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
             error = double.tryParse(value) == null
                 ? 'Value is not a valid number'
                 : null;
+          }
+
+          if (parent?.requiredProperties?.contains(key) == true &&
+              value?.isNotEmpty != true) {
+            error = '$key is a required field';
           }
 
           return error;
@@ -270,25 +352,19 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
                 child: Text('UNKNOWN SCHEMA'),
               ),
             )
-          : Form(
-              autovalidateMode: AutovalidateMode.always,
-              child: Builder(
-                builder: (BuildContext context) => Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (BuildContext context, int index) =>
-                            Padding(
-                          padding: EdgeInsets.only(bottom: 16.0),
-                          child: _properties[index],
-                        ),
-                        itemCount: _properties.length,
-                        padding: EdgeInsets.all(16.0),
-                      ),
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) => Padding(
+                      padding: EdgeInsets.only(bottom: 16.0),
+                      child: _properties[index],
                     ),
-                  ],
+                    itemCount: _properties.length,
+                    padding: EdgeInsets.all(16.0),
+                  ),
                 ),
-              ),
+              ],
             ),
     );
   }

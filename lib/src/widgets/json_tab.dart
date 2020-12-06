@@ -27,7 +27,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
   final List<StreamSubscription> _subscriptions = [];
 
   AnimationController _animationController;
-  String _error;
+  // String _error;
   String _text = '';
   WidgetTreeBloc _widgetTreeBloc;
 
