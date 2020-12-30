@@ -6,7 +6,7 @@ import 'package:json_dynamic_widget/json_dynamic_widget_schemas.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/schema_bloc.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/widget_tree_bloc.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/multi_property_editor.dart';
-import 'package:json_schema/json_schema.dart';
+import 'package:json_schema2/json_schema2.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
@@ -14,10 +14,12 @@ class WidgetPropertiesEditor extends StatefulWidget {
   WidgetPropertiesEditor({
     Key key,
     @required this.data,
+    this.onApply,
   })  : assert(data != null),
         super(key: key);
 
   final JsonWidgetData data;
+  final Function(JsonWidgetData data) onApply;
 
   @override
   _WidgetPropertiesEditorState createState() => _WidgetPropertiesEditorState();
@@ -104,46 +106,67 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                         SizedBox(height: 16.0),
                         Flexible(
                           child: ClipRect(
-                            child: RaisedButton(
-                              onPressed: () {
-                                try {
-                                  var form = Form.of(context);
-                                  if (form.validate() == true) {
-                                    form.save();
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                    var data = _widgetTreeBloc.replace(
-                                      _data,
-                                      _data.copyWith(
-                                        args: _values,
-                                      ),
-                                    );
-
-                                    data.builder().build(
-                                          childBuilder: null,
-                                          context: null,
-                                          data: data,
+                            child: ElevatedButton(
+                              onPressed: widget.onApply != null
+                                  ? () {
+                                      var form = Form.of(context);
+                                      if (form.validate() == true) {
+                                        form.save();
+                                        FocusScope.of(context).requestFocus(
+                                          FocusNode(),
                                         );
 
-                                    _widgetTreeBloc.widget = data;
+                                        widget.onApply(
+                                          _data.copyWith(
+                                            args: _values,
+                                          ),
+                                        );
 
-                                    // var nav = Navigator.of(context);
-                                    // while (nav.canPop()) {
-                                    //   nav.pop();
-                                    // }
-
-                                    _data = data;
-                                    if (mounted == true) {
-                                      setState(() {});
+                                        Navigator.of(context).pop();
+                                      }
                                     }
-                                  }
-                                } catch (e) {
-                                  _logger.info(
-                                    'Error attempting to create widget with current values.',
-                                    e,
-                                  );
-                                }
-                              },
+                                  : () {
+                                      try {
+                                        var form = Form.of(context);
+                                        if (form.validate() == true) {
+                                          form.save();
+                                          FocusScope.of(context).requestFocus(
+                                            FocusNode(),
+                                          );
+                                          var newData = _data.copyWith(
+                                            args: _values,
+                                          );
+
+                                          var data = _widgetTreeBloc.replace(
+                                            _data,
+                                            newData,
+                                          );
+
+                                          data.builder().build(
+                                                childBuilder: null,
+                                                context: null,
+                                                data: data,
+                                              );
+
+                                          _widgetTreeBloc.widget = data;
+
+                                          // var nav = Navigator.of(context);
+                                          // while (nav.canPop()) {
+                                          //   nav.pop();
+                                          // }
+
+                                          _data = newData;
+                                          if (mounted == true) {
+                                            setState(() {});
+                                          }
+                                        }
+                                      } catch (e) {
+                                        _logger.info(
+                                          'Error attempting to create widget with current values.',
+                                          e,
+                                        );
+                                      }
+                                    },
                               child: Text(
                                 'APPLY',
                                 maxLines: 1,

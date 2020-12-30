@@ -5,7 +5,7 @@ import 'package:json_class/json_class.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget_schemas.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/schema_bloc.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/supported_widgets_list.dart';
-import 'package:json_schema/json_schema.dart';
+import 'package:json_schema2/json_schema2.dart';
 import 'package:provider/provider.dart';
 
 class MultiPropertyEditor extends StatefulWidget {

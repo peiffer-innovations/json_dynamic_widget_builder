@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
-// import 'package:json_schema/json_schema.dart';
+// import 'package:json_schema2/json_schema2.dart';
 // import 'package:json_theme/json_theme_schemas.dart';
 
 class WidgetTreeBloc {
@@ -88,6 +88,30 @@ class WidgetTreeBloc {
     } else {
       widget?.children?.forEach((sub) {
         result ??= findInWidget(sub, id, type);
+      });
+    }
+
+    return result;
+  }
+
+  JsonWidgetData findParentOfWidget(
+    JsonWidgetData widget,
+    String id,
+    String type, {
+    JsonWidgetData parent,
+  }) {
+    JsonWidgetData result;
+
+    if (widget?.id == id && widget?.type == type) {
+      result = parent;
+    } else {
+      widget?.children?.forEach((sub) {
+        result ??= findParentOfWidget(
+          sub,
+          id,
+          type,
+          parent: widget,
+        );
       });
     }
 

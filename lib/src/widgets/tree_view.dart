@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/widget_tree_bloc.dart';
+import 'package:json_dynamic_widget_builder/src/widgets/supported_widgets_list.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/widget_properties_editor.dart';
 import 'package:provider/provider.dart';
 
@@ -121,13 +122,43 @@ class _TreeViewState extends State<TreeView>
 
   @override
   Widget build(BuildContext context) {
+    var numSupportedChildren =
+        _widgetTreeBloc.current?.builder()?.numSupportedChildren ?? 0;
+    var actualChildren = _widgetTreeBloc.current?.children?.length ?? 0;
     return Scaffold(
       appBar: AppBar(
         title: Text('Widget Tree'),
       ),
       body: _widgetTreeBloc.widget == null
           ? Center(
-              child: Text('ADD WIDGET'),
+              child: RaisedButton(
+                onPressed: () async {
+                  var data = await Navigator.of(context).push(
+                    MaterialPageRoute<JsonWidgetData>(
+                      builder: (BuildContext context) => SupportedWidgetsList(),
+                    ),
+                  );
+
+                  if (data != null) {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            WidgetPropertiesEditor(
+                          data: data,
+                          onApply: (JsonWidgetData data) {
+                            _widgetTreeBloc.widget = data;
+
+                            if (mounted == true) {
+                              setState(() {});
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: Text('ADD WIDGET'),
+              ),
             )
           : Column(
               children: [
@@ -151,8 +182,13 @@ class _TreeViewState extends State<TreeView>
                               Divider(),
                               Flexible(
                                 child: ClipRect(
-                                  child: RaisedButton.icon(
-                                    color: Colors.redAccent,
+                                  child: ElevatedButton.icon(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        Colors.redAccent,
+                                      ),
+                                    ),
                                     icon: Flexible(
                                       child: ClipRect(
                                         child: Icon(Icons.delete),
@@ -166,7 +202,23 @@ class _TreeViewState extends State<TreeView>
                                       ),
                                     ),
                                     onPressed: () {
+                                      var parent =
+                                          _widgetTreeBloc.findParentOfWidget(
+                                        _widgetTreeBloc.widget,
+                                        _widgetTreeBloc.current.id,
+                                        _widgetTreeBloc.current.type,
+                                      );
+
+                                      if (parent == null) {
+                                        _widgetTreeBloc.widget = null;
+                                      } else {
+                                        parent.children.remove(
+                                          _widgetTreeBloc.current,
+                                        );
+                                      }
                                       _widgetTreeBloc.current = null;
+
+                                      setState(() {});
                                     },
                                   ),
                                 ),
@@ -174,7 +226,7 @@ class _TreeViewState extends State<TreeView>
                               SizedBox(height: 16.0),
                               Flexible(
                                 child: ClipRect(
-                                  child: RaisedButton.icon(
+                                  child: ElevatedButton.icon(
                                     icon: Flexible(
                                       child: ClipRect(
                                         child: Icon(Icons.add_circle),
@@ -187,14 +239,56 @@ class _TreeViewState extends State<TreeView>
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: numSupportedChildren == -1 ||
+                                            numSupportedChildren >
+                                                actualChildren
+                                        ? () async {
+                                            var data =
+                                                await Navigator.of(context)
+                                                    .push(
+                                              MaterialPageRoute<JsonWidgetData>(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        SupportedWidgetsList(),
+                                              ),
+                                            );
+
+                                            if (data != null) {
+                                              await Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      WidgetPropertiesEditor(
+                                                    data: data,
+                                                    onApply:
+                                                        (JsonWidgetData data) {
+                                                      var newData =
+                                                          _widgetTreeBloc
+                                                              .addWidget(
+                                                        _widgetTreeBloc.current,
+                                                        data,
+                                                      );
+
+                                                      _widgetTreeBloc.widget =
+                                                          newData;
+
+                                                      if (mounted == true) {
+                                                        setState(() {});
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        : null,
                                   ),
                                 ),
                               ),
                               SizedBox(height: 16.0),
                               Flexible(
                                 child: ClipRect(
-                                  child: RaisedButton.icon(
+                                  child: ElevatedButton.icon(
                                     icon: Flexible(
                                       child: ClipRect(
                                         child: Icon(Icons.edit),

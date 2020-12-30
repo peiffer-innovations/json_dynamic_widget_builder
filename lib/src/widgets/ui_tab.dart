@@ -62,6 +62,17 @@ class _UiTabState extends State<UiTab> {
     super.dispose();
   }
 
+  Widget _neverNullWidget(BuildContext context, Widget widget) =>
+      widget ??
+      Container(
+        constraints: BoxConstraints(
+          maxHeight: 40.0,
+          minWidth: 40.0,
+        ),
+        color: Color(0xff444444),
+        child: Placeholder(),
+      );
+
   void _rebuild() {
     try {
       var widget = this.widget.all == true
@@ -70,7 +81,10 @@ class _UiTabState extends State<UiTab> {
       if (widget == null) {
         _built = null;
       } else {
-        _built = widget.build(context: context);
+        _built = widget.build(
+          childBuilder: _neverNullWidget,
+          context: context,
+        );
       }
       _uniqueKey = UniqueKey();
     } catch (e, stack) {
@@ -111,7 +125,7 @@ class _UiTabState extends State<UiTab> {
                 Center(
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Text('ADD WIDGET'),
+                    child: Text('NOTHING SELECTED'),
                   ),
                 ),
           ),

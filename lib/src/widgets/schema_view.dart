@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/schema_bloc.dart';
-import 'package:json_schema/json_schema.dart';
+import 'package:json_schema2/json_schema2.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 

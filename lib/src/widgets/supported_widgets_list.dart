@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget_schemas.dart';
 // import 'package:json_dynamic_widget_builder/src/bloc/schema_bloc.dart';
 // import 'package:provider/provider.dart';
@@ -48,7 +49,25 @@ class _SupportedWidgetsListState extends State<SupportedWidgetsList> {
             // type = type.substring(0, type.length - '.json'.length);
 
             return ListTile(
-              onTap: () {},
+              onTap: () {
+                if (_type == type) {
+                  Navigator.of(context).pop(null);
+                } else {
+                  var registry = JsonWidgetRegistry.instance;
+                  var builder = registry.getWidgetBuilder(type);
+                  Navigator.of(context).pop(JsonWidgetData(
+                    args: <String, dynamic>{},
+                    builder: () {
+                      return builder(
+                        registry
+                            .processDynamicArgs(<String, dynamic>{})?.values,
+                        registry: registry,
+                      );
+                    },
+                    type: type,
+                  ));
+                }
+              },
               selected: _type == type,
               subtitle: _type != type || widget.values['args'] == null
                   ? null

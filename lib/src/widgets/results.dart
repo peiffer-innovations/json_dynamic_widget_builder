@@ -16,11 +16,11 @@ class Results extends StatefulWidget {
 class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
   bool _all = true;
   bool _leftAlign = false;
-  bool _topAlign = false;
-  bool _landscape = true;
-  int _wideRatio = 16;
-  int _highRatio = 9;
+  int _highRatio = 16;
   int _index = 0;
+  bool _landscape = false;
+  bool _topAlign = false;
+  int _wideRatio = 9;
 
   @override
   void initState() {
@@ -42,13 +42,13 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              child: Text('CANCEL'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () => Navigator.of(context).pop(
                 [_dialogWide, _dialogHigh],
               ),
-              child: Text('Ok'),
+              child: Text('OK'),
             ),
           ],
           content: Row(
@@ -86,7 +86,7 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
               ),
             ],
           ),
-          title: Text('Select the Aspect Ratio'),
+          title: Text('Aspect Ratio'),
         );
       },
       context: context,
