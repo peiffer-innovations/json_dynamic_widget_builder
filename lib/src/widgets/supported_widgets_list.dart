@@ -6,7 +6,7 @@ import 'package:json_dynamic_widget/json_dynamic_widget_schemas.dart';
 
 class SupportedWidgetsList extends StatefulWidget {
   SupportedWidgetsList({
-    Key key,
+    Key? key,
     dynamic values,
   })  : values = values ?? <String, dynamic>{},
         super(key: key);
@@ -21,10 +21,10 @@ class _SupportedWidgetsListState extends State<SupportedWidgetsList> {
   final List<String> _widgets = JsonDynamicWidgetSchemas.all.keys
       .map((e) => e.substring(0, e.length - '.json'.length))
       .toList()
-        ..sort();
+    ..sort();
 
   // SchemaBloc _schemaBloc;
-  String _type;
+  String? _type;
 
   @override
   void initState() {
@@ -54,15 +54,16 @@ class _SupportedWidgetsListState extends State<SupportedWidgetsList> {
                   Navigator.of(context).pop(null);
                 } else {
                   var registry = JsonWidgetRegistry.instance;
-                  var builder = registry.getWidgetBuilder(type);
+                  JsonWidgetBuilder? Function(dynamic,
+                          {JsonWidgetRegistry registry}) builder =
+                      registry.getWidgetBuilder(type);
                   Navigator.of(context).pop(JsonWidgetData(
                     args: <String, dynamic>{},
                     builder: () {
                       return builder(
-                        registry
-                            .processDynamicArgs(<String, dynamic>{})?.values,
+                        registry.processDynamicArgs(<String, dynamic>{}).values,
                         registry: registry,
-                      );
+                      )!;
                     },
                     type: type,
                   ));
@@ -72,7 +73,7 @@ class _SupportedWidgetsListState extends State<SupportedWidgetsList> {
               subtitle: _type != type || widget.values['args'] == null
                   ? null
                   : Text(
-                      widget.values['args']?.toString(),
+                      widget.values['args'].toString(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

@@ -2,17 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:tinycolor/tinycolor.dart';
+import 'package:json_dynamic_widget_builder/src/tinycolor/tinycolor.dart';
 
 class VerticalSplitView extends StatefulWidget {
   const VerticalSplitView({
-    Key key,
-    @required this.left,
-    @required this.right,
+    Key? key,
+    required this.left,
+    required this.right,
     this.ratio = 0.33,
-  })  : assert(left != null),
-        assert(right != null),
-        assert(ratio >= 0),
+  })  : assert(ratio >= 0),
         assert(ratio <= 1),
         super(key: key);
 
@@ -28,12 +26,12 @@ class _VerticalSplitViewState extends State<VerticalSplitView> {
   final _dividerWidth = 16.0;
 
   //from 0-1
-  double _ratio;
-  double _maxWidth;
+  late double _ratio;
+  double? _maxWidth;
 
-  double get _width1 => _ratio * _maxWidth;
+  double get _width1 => _ratio * _maxWidth!;
 
-  double get _width2 => (1 - _ratio) * _maxWidth;
+  double get _width2 => (1 - _ratio) * _maxWidth!;
 
   @override
   void initState() {
@@ -67,7 +65,7 @@ class _VerticalSplitViewState extends State<VerticalSplitView> {
                 behavior: HitTestBehavior.translucent,
                 onPanUpdate: (DragUpdateDetails details) {
                   setState(() {
-                    _ratio += details.delta.dx / _maxWidth;
+                    _ratio += details.delta.dx / _maxWidth!;
                     if (_ratio > 1) {
                       _ratio = 1;
                     } else if (_ratio < 0.0) {

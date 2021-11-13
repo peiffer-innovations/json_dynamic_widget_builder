@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 
 class VariablesTab extends StatefulWidget {
   VariablesTab({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -18,7 +18,7 @@ class VariablesTab extends StatefulWidget {
 class _VariablesTabState extends State<VariablesTab> {
   final Map<String, FocusNode> _focusNodes = {};
   final Map<String, String> _temp = {};
-  final List<KeyValuePair<String, String>> _vars = [];
+  final List<KeyValuePair<String, String?>> _vars = [];
   String _emptyUuid = Uuid().v4();
 
   @override
@@ -51,7 +51,7 @@ class _VariablesTabState extends State<VariablesTab> {
 
   Future<void> _updateValues() async {
     var registry = JsonWidgetRegistry.instance;
-    var values = registry.values ?? <String, dynamic>{};
+    var values = registry.values;
     _vars.clear();
 
     values.forEach(
@@ -66,7 +66,7 @@ class _VariablesTabState extends State<VariablesTab> {
     }
 
     var sembastBloc = context.read<SembastBloc>();
-    var db = sembastBloc.getDatabase(SembastBloc.db_variables);
+    var db = sembastBloc.getDatabase(SembastBloc.db_variables)!;
     var store = StoreRef.main();
 
     await db.transaction((txn) {

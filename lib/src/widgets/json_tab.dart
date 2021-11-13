@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
@@ -11,7 +10,7 @@ import 'package:provider/provider.dart';
 class JsonTab extends StatefulWidget {
   JsonTab({
     this.all = true,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final bool all;
@@ -26,10 +25,10 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   final List<StreamSubscription> _subscriptions = [];
 
-  AnimationController _animationController;
+  late AnimationController _animationController;
   // String _error;
   String _text = '';
-  WidgetTreeBloc _widgetTreeBloc;
+  late WidgetTreeBloc _widgetTreeBloc;
 
   @override
   void initState() {
@@ -72,7 +71,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
       }
     });
 
-    _subscriptions.add(_widgetTreeBloc.stream.listen((event) {
+    _subscriptions.add(_widgetTreeBloc.stream!.listen((event) {
       _rebuild();
 
       if (mounted == true) {
@@ -84,7 +83,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
 
   @override
   void didUpdateWidget(Widget oldWidget) {
-    super.didUpdateWidget(oldWidget);
+    super.didUpdateWidget(oldWidget as JsonTab);
 
     _rebuild();
   }
@@ -92,7 +91,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _controller.dispose();
-    _subscriptions?.forEach((sub) => sub.cancel());
+    _subscriptions.forEach((sub) => sub.cancel());
     _subscriptions.clear();
 
     super.dispose();

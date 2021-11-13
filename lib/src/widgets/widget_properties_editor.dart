@@ -12,14 +12,13 @@ import 'package:provider/provider.dart';
 
 class WidgetPropertiesEditor extends StatefulWidget {
   WidgetPropertiesEditor({
-    Key key,
-    @required this.data,
+    Key? key,
+    required this.data,
     this.onApply,
-  })  : assert(data != null),
-        super(key: key);
+  }) : super(key: key);
 
   final JsonWidgetData data;
-  final Function(JsonWidgetData data) onApply;
+  final Function(JsonWidgetData data)? onApply;
 
   @override
   _WidgetPropertiesEditorState createState() => _WidgetPropertiesEditorState();
@@ -28,11 +27,11 @@ class WidgetPropertiesEditor extends StatefulWidget {
 class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
   static final Logger _logger = Logger('_WidgetPropertiesEditorState');
 
-  JsonWidgetData _data;
-  JsonSchema _schema;
-  SchemaBloc _schemaBloc;
+  JsonWidgetData? _data;
+  JsonSchema? _schema;
+  late SchemaBloc _schemaBloc;
   dynamic _values;
-  WidgetTreeBloc _widgetTreeBloc;
+  late WidgetTreeBloc _widgetTreeBloc;
 
   @override
   void initState() {
@@ -52,8 +51,8 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
 
   @override
   Widget build(BuildContext context) {
-    var id = _schema.id.toString().split('/').last;
-    if (id?.endsWith('.json') == true) {
+    var id = _schema!.id.toString().split('/').last;
+    if (id.endsWith('.json') == true) {
       id = id.substring(0, id.length - '.json'.length);
     }
 
@@ -74,7 +73,7 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                   Expanded(
                     child: MultiPropertyEditor(
                       id: id,
-                      schema: _schema,
+                      schema: _schema!,
                       values: _values,
                     ),
                   ),
@@ -109,15 +108,15 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                             child: ElevatedButton(
                               onPressed: widget.onApply != null
                                   ? () {
-                                      var form = Form.of(context);
+                                      var form = Form.of(context)!;
                                       if (form.validate() == true) {
                                         form.save();
                                         FocusScope.of(context).requestFocus(
                                           FocusNode(),
                                         );
 
-                                        widget.onApply(
-                                          _data.copyWith(
+                                        widget.onApply!(
+                                          _data!.copyWith(
                                             args: _values,
                                           ),
                                         );
@@ -127,24 +126,24 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                                     }
                                   : () {
                                       try {
-                                        var form = Form.of(context);
+                                        var form = Form.of(context)!;
                                         if (form.validate() == true) {
                                           form.save();
                                           FocusScope.of(context).requestFocus(
                                             FocusNode(),
                                           );
-                                          var newData = _data.copyWith(
+                                          var newData = _data!.copyWith(
                                             args: _values,
                                           );
 
                                           var data = _widgetTreeBloc.replace(
                                             _data,
                                             newData,
-                                          );
+                                          )!;
 
                                           data.builder().build(
                                                 childBuilder: null,
-                                                context: null,
+                                                context: context,
                                                 data: data,
                                               );
 

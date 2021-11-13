@@ -1,13 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:json_dynamic_widget_builder/src/models/simulated_device.dart';
+import 'package:json_dynamic_widget_builder/src/models/simulated_device_registry.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/animated_indexed_stack.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/json_tab.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/ui_tab.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/variables_tab.dart';
 
 class Results extends StatefulWidget {
-  Results({Key key}) : super(key: key);
+  Results({Key? key}) : super(key: key);
 
   @override
   _ResultsState createState() => _ResultsState();
@@ -15,12 +15,10 @@ class Results extends StatefulWidget {
 
 class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
   bool _all = true;
-  bool _leftAlign = false;
-  int _highRatio = 16;
+  SimulatedDevice? _device;
   int _index = 0;
   bool _landscape = false;
-  bool _topAlign = false;
-  int _wideRatio = 9;
+  bool _strictSize = true;
 
   @override
   void initState() {
@@ -32,71 +30,11 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<List<String>> _showAspectRatioDialog() async {
-    final result = await showDialog<List<String>>(
-      builder: (context) {
-        var _dialogWide = '$_wideRatio';
-        var _dialogHigh = '$_highRatio';
-
-        return AlertDialog(
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('CANCEL'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(
-                [_dialogWide, _dialogHigh],
-              ),
-              child: Text('OK'),
-            ),
-          ],
-          content: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 50.0,
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Wide',
-                  ),
-                  initialValue: _dialogWide,
-                  keyboardType: TextInputType.number,
-                  onChanged: (changed) {
-                    _dialogWide = changed;
-                  },
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Text(':'),
-              SizedBox(
-                width: 50.0,
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'High',
-                  ),
-                  initialValue: _dialogHigh,
-                  keyboardType: TextInputType.number,
-                  onChanged: (changed) {
-                    _dialogHigh = changed;
-                  },
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-          title: Text('Aspect Ratio'),
-        );
-      },
-      context: context,
-    );
-
-    return result;
-  }
-
   @override
   Widget build(BuildContext context) {
+    var deviceRegistry = SimulatedDeviceRegistry();
+    var devices = deviceRegistry.devices;
+
     return Material(
       child: Column(
         children: [
@@ -117,156 +55,157 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                       height: kToolbarHeight,
                       child: Row(
                         children: [
-                          AnimatedOpacity(
+                          AnimatedSwitcher(
                             duration: Duration(milliseconds: 300),
-                            opacity: _index == 0 ? 1.0 : 0.0,
-                            child: SizedBox(
-                              height: 50.0,
-                              child: OutlinedButton(
-                                onPressed: () async {
-                                  final ratio = await _showAspectRatioDialog();
-                                  if (ratio != null && ratio?.length == 2) {
-                                    setState(() {
-                                      _wideRatio =
-                                          int.tryParse(ratio[0]) ?? _wideRatio;
-                                      _highRatio =
-                                          int.tryParse(ratio[1]) ?? _highRatio;
+                            child: _index != 0 || _device == null
+                                ? SizedBox()
+                                : ToggleButtons(
+                                    borderRadius: BorderRadius.circular(32.0),
+                                    isSelected: [
+                                      _landscape,
+                                      !_landscape,
+                                    ],
+                                    onPressed: (int index) => setState(
+                                      () => _landscape = index == 0,
+                                    ),
+                                    children: [
+                                      Tooltip(
+                                        message: 'LANDSCAPE',
+                                        child: Padding(
+                                          padding: EdgeInsets.all(16.0),
+                                          child: Icon(
+                                              Icons.stay_current_landscape),
+                                        ),
+                                      ),
+                                      Tooltip(
+                                        message: 'PORTRAIT',
+                                        child: Padding(
+                                          padding: EdgeInsets.all(16.0),
+                                          child:
+                                              Icon(Icons.stay_current_portrait),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                          SizedBox(width: 16.0),
+                          AnimatedSwitcher(
+                            duration: Duration(milliseconds: 300),
+                            child: _index != 0
+                                ? SizedBox()
+                                : ToggleButtons(
+                                    borderRadius: BorderRadius.circular(32.0),
+                                    isSelected: [
+                                      _strictSize,
+                                      _device != null,
+                                    ],
+                                    onPressed: (int index) async {
+                                      if (index == 0) {
+                                        setState(
+                                          () => _strictSize = !_strictSize,
+                                        );
+                                      } else {
+                                        var device = await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              SimpleDialog(
+                                            title: Text('SELECT DEVICE'),
+                                            children: [
+                                              ListTile(
+                                                onTap: () =>
+                                                    Navigator.of(context)
+                                                        .pop(false),
+                                                title: Text('NONE'),
+                                              ),
+                                              ...[
+                                                for (var device in devices)
+                                                  ListTile(
+                                                    onTap: () =>
+                                                        Navigator.of(context)
+                                                            .pop(device),
+                                                    subtitle: Text(
+                                                      '${device!.dips.width.toInt()} x ${device.dips.height.toInt()}',
+                                                    ),
+                                                    title: Text(device.name),
+                                                    trailing: device.name ==
+                                                            _device?.name
+                                                        ? Icon(
+                                                            Icons.check_circle,
+                                                            color: Colors.green,
+                                                          )
+                                                        : null,
+                                                  ),
+                                              ],
+                                            ],
+                                          ),
+                                        );
 
-                                      _landscape = _wideRatio > _highRatio;
-                                    });
-                                  }
-                                },
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
+                                        if (device != null) {
+                                          if (device == false) {
+                                            _device = null;
+                                          } else {
+                                            _device = device;
+                                          }
+
+                                          setState(() {});
+                                        }
+                                      }
+                                    },
+                                    children: [
+                                      Tooltip(
+                                        message: _strictSize == true
+                                            ? 'FILL VIEWPORT'
+                                            : 'USE ACTUAL DIPS',
+                                        child: Padding(
+                                          padding: EdgeInsets.all(16.0),
+                                          child: Icon(_strictSize == true
+                                              ? Icons.fullscreen_exit
+                                              : Icons.fullscreen),
+                                        ),
+                                      ),
+                                      Tooltip(
+                                        message: 'SELECT SIMULATED DEVICE',
+                                        child: Padding(
+                                          padding: EdgeInsets.all(16.0),
+                                          child: Icon(Icons.phone_android),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  side: MaterialStateProperty.all(
-                                    BorderSide(
-                                      color: Colors.grey[800],
-                                      width: 1.5,
-                                    ),
+                          ),
+                          SizedBox(width: 16.0),
+                          AnimatedSwitcher(
+                            duration: Duration(milliseconds: 300),
+                            child: _index != 0 && _index != 1
+                                ? SizedBox()
+                                : ToggleButtons(
+                                    borderRadius: BorderRadius.circular(32.0),
+                                    isSelected: [
+                                      _all,
+                                      !_all,
+                                    ],
+                                    onPressed: (int index) {
+                                      _all = index == 0;
+                                      setState(() {});
+                                    },
+                                    children: [
+                                      Tooltip(
+                                        message: 'SHOW ENTIRE TREE',
+                                        child: Padding(
+                                          padding: EdgeInsets.all(16.0),
+                                          child: Text('ALL'),
+                                        ),
+                                      ),
+                                      Tooltip(
+                                        message:
+                                            'SHOW ONLY THE CURRENTLY SELECTED WIDGET',
+                                        child: Padding(
+                                          padding: EdgeInsets.all(16.0),
+                                          child: Text('SELECTED'),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                child: Icon(
-                                  Icons.aspect_ratio_outlined,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 16.0),
-                          AnimatedOpacity(
-                            duration: Duration(milliseconds: 300),
-                            opacity: _index == 0 ? 1.0 : 0.0,
-                            child: ToggleButtons(
-                              borderRadius: BorderRadius.circular(32.0),
-                              isSelected: [
-                                _landscape,
-                                !_landscape,
-                              ],
-                              onPressed: (int index) {
-                                _landscape = index == 0;
-                                setState(() {
-                                  var temp = [_highRatio, _wideRatio];
-                                  _highRatio = _landscape
-                                      ? min(temp[0], temp[1])
-                                      : max(temp[0], temp[1]);
-                                  _wideRatio = _landscape
-                                      ? max(temp[0], temp[1])
-                                      : min(temp[0], temp[1]);
-                                });
-                              },
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.stay_current_landscape),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.stay_current_portrait),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 16.0),
-                          AnimatedOpacity(
-                            duration: Duration(milliseconds: 300),
-                            opacity: _index == 0 ? 1.0 : 0.0,
-                            child: ToggleButtons(
-                              borderRadius: BorderRadius.circular(32.0),
-                              isSelected: [
-                                _leftAlign,
-                                !_leftAlign,
-                              ],
-                              onPressed: (int index) {
-                                _leftAlign = index == 0;
-                                setState(() {});
-                              },
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.format_align_left),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.format_align_center),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 16.0),
-                          AnimatedOpacity(
-                            duration: Duration(milliseconds: 300),
-                            opacity: _index == 0 ? 1.0 : 0.0,
-                            child: ToggleButtons(
-                              borderRadius: BorderRadius.circular(32.0),
-                              isSelected: [
-                                _topAlign,
-                                !_topAlign,
-                              ],
-                              onPressed: (int index) {
-                                _topAlign = index == 0;
-                                setState(() {});
-                              },
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.vertical_align_top),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.vertical_align_center),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 16.0),
-                          AnimatedOpacity(
-                            duration: Duration(milliseconds: 300),
-                            opacity: _index == 0 || _index == 1 ? 1.0 : 0.0,
-                            child: ToggleButtons(
-                              borderRadius: BorderRadius.circular(32.0),
-                              isSelected: [
-                                _all,
-                                !_all,
-                              ],
-                              onPressed: (int index) {
-                                _all = index == 0;
-                                setState(() {});
-                              },
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Text('ALL'),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Text('SELECTED'),
-                                ),
-                              ],
-                            ),
                           ),
                           SizedBox(width: 16.0),
                           ToggleButtons(
@@ -281,17 +220,26 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                               setState(() {});
                             },
                             children: [
-                              Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text('VISUAL'),
+                              Tooltip(
+                                message: 'SHOW RENDERED WIDGETS',
+                                child: Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Text('VISUAL'),
+                                ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text('JSON'),
+                              Tooltip(
+                                message: 'SHOW JSON DATA',
+                                child: Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Text('JSON'),
+                                ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text('VARIABLES'),
+                              Tooltip(
+                                message: 'SHOW VARIABLE VALUES',
+                                child: Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Text('VARIABLES'),
+                                ),
                               ),
                             ],
                           ),
@@ -312,10 +260,11 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
               children: [
                 UiTab(
                   all: _all,
-                  highRatio: _highRatio,
-                  leftAlign: _leftAlign,
-                  topAlign: _topAlign,
-                  wideRatio: _wideRatio,
+                  device: _device,
+                  landscape: _landscape,
+                  leftAlign: false,
+                  strictSize: _strictSize,
+                  topAlign: false,
                 ),
                 JsonTab(all: _all),
                 VariablesTab(),

@@ -10,12 +10,11 @@ import 'package:provider/provider.dart';
 
 class MultiPropertyEditor extends StatefulWidget {
   MultiPropertyEditor({
-    @required this.id,
-    Key key,
-    @required this.schema,
-    @required this.values,
-  })  : assert(id?.isNotEmpty == true),
-        assert(schema != null),
+    required this.id,
+    Key? key,
+    required this.schema,
+    required this.values,
+  })  : assert(id.isNotEmpty == true),
         super(key: key);
 
   final String id;
@@ -28,8 +27,8 @@ class MultiPropertyEditor extends StatefulWidget {
 
 class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
   final FocusNode _focusNode = FocusNode();
-  List<Widget> _properties;
-  SchemaBloc _schemaBloc;
+  List<Widget>? _properties;
+  late SchemaBloc _schemaBloc;
   dynamic _values;
 
   @override
@@ -58,7 +57,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
       ));
     });
 
-    if (properties?.isNotEmpty != true) {
+    if (properties.isNotEmpty != true) {
       properties.add(_getFormWidget(
         widget.id,
         schema,
@@ -77,26 +76,25 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
   }
 
   Map<String, JsonSchema> _getAllProperties(JsonSchema schema) {
-    var props =
-        schema.properties?.isNotEmpty == true ? schema.properties : null;
+    var props = schema.properties.isNotEmpty == true ? schema.properties : null;
 
     props ??= _getPropertiesFromList(schema.anyOf);
     props ??= _getPropertiesFromList(schema.oneOf);
 
-    return props;
+    return props!;
   }
 
   Widget _getFormWidget(
     String key,
     JsonSchema schema, {
-    JsonSchema parent,
+    JsonSchema? parent,
   }) {
     Widget result;
     var enumValues = <String>{};
     var isBool = false;
     var isNumber = false;
-    JsonSchema dynWidgetRef;
-    JsonSchema objRef;
+    JsonSchema? dynWidgetRef;
+    JsonSchema? objRef;
 
     // var props = _getAllProperties(schema);
 
@@ -110,7 +108,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
       }
 
       if (schema.enumValues?.isNotEmpty == true) {
-        enumValues.addAll(List<String>.from(schema.enumValues));
+        enumValues.addAll(List<String>.from(schema.enumValues!));
       }
       try {
         var type = schema.type?.toString();
@@ -151,9 +149,9 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
     //   );
     // } else {
     checkSchema(schema);
-    schema.anyOf?.forEach((s) => checkSchema(s));
-    schema.allOf?.forEach((s) => checkSchema(s));
-    schema.oneOf?.forEach((s) => checkSchema(s));
+    schema.anyOf.forEach((s) => checkSchema(s));
+    schema.allOf.forEach((s) => checkSchema(s));
+    schema.oneOf.forEach((s) => checkSchema(s));
 
     if (dynWidgetRef != null) {
       result = ListTile(
@@ -192,7 +190,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
             MaterialPageRoute(
               builder: (BuildContext context) => MultiPropertyEditor(
                 id: key,
-                schema: objRef,
+                schema: objRef!,
                 values: _values[key] ?? <String, dynamic>{},
               ),
             ),
@@ -225,16 +223,16 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
           DropdownMenuItem(value: true, child: Text('true')),
           DropdownMenuItem(value: false, child: Text('false')),
         ],
-        onChanged: (value) {
+        onChanged: (dynamic value) {
           _values[key] = value == 'null' ? null : value;
         },
-        onSaved: (value) {
+        onSaved: (dynamic value) {
           _values[key] = value == 'null' ? null : value;
         },
         value:
             _values[key] == null ? 'null' : JsonClass.parseBool(_values[key]),
       );
-    } else if (enumValues?.isNotEmpty == true) {
+    } else if (enumValues.isNotEmpty == true) {
       result = DropdownButtonFormField(
         autovalidateMode: AutovalidateMode.always,
         decoration: InputDecoration(labelText: key),
@@ -245,15 +243,15 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
               DropdownMenuItem(value: e, child: Text(e)),
           ],
         ],
-        onChanged: (value) {
+        onChanged: (dynamic value) {
           _values[key] = value == 'null' ? null : value;
         },
-        onSaved: (value) {
+        onSaved: (dynamic value) {
           _values[key] = value == 'null' ? null : value;
         },
         value: _values[key] ?? 'null',
         validator: (dynamic value) {
-          String error;
+          String? error;
 
           if ('null' == value) {
             value = null;
@@ -261,7 +259,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
 
           if (parent?.requiredProperties?.contains(key) == true &&
               value is String &&
-              value?.isNotEmpty != true) {
+              value.isNotEmpty != true) {
             error = '$key is a required field';
           }
 
@@ -277,16 +275,16 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
                 : _values[key])
             ?.toString(),
         onChanged: (value) {
-          _values[key] = value?.isNotEmpty == true ? value : null;
+          _values[key] = value.isNotEmpty == true ? value : null;
         },
         onSaved: (value) {
           _values[key] = value?.isNotEmpty == true ? value : null;
         },
-        validator: (String value) {
-          String error;
+        validator: (String? value) {
+          String? error;
 
           if (value?.isNotEmpty == true && isNumber == true) {
-            error = double.tryParse(value) == null
+            error = double.tryParse(value!) == null
                 ? 'Value is not a valid number'
                 : null;
           }
@@ -304,14 +302,14 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
     return result;
   }
 
-  Map<String, JsonSchema> _getPropertiesFromList(List<JsonSchema> schemas) {
-    Map<String, JsonSchema> props;
+  Map<String, JsonSchema>? _getPropertiesFromList(List<JsonSchema> schemas) {
+    Map<String, JsonSchema>? props;
 
-    if (schemas?.isNotEmpty == true) {
+    if (schemas.isNotEmpty == true) {
       props = <String, JsonSchema>{};
 
       for (var schema in schemas) {
-        if (schema.properties?.isNotEmpty == true) {
+        if (schema.properties.isNotEmpty == true) {
           props.addAll(schema.properties);
         }
       }
@@ -358,9 +356,9 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
                   child: ListView.builder(
                     itemBuilder: (BuildContext context, int index) => Padding(
                       padding: EdgeInsets.only(bottom: 16.0),
-                      child: _properties[index],
+                      child: _properties![index],
                     ),
-                    itemCount: _properties.length,
+                    itemCount: _properties!.length,
                     padding: EdgeInsets.all(16.0),
                   ),
                 ),

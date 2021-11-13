@@ -1,15 +1,17 @@
 import 'dart:async';
 
+// import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/widget_tree_bloc.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/supported_widgets_list.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/widget_properties_editor.dart';
+// import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 class TreeView extends StatefulWidget {
   TreeView({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -18,9 +20,11 @@ class TreeView extends StatefulWidget {
 
 class _TreeViewState extends State<TreeView>
     with SingleTickerProviderStateMixin {
+  // static final Logger _logger = Logger('TreeViewState');
   final List<StreamSubscription> _subscriptions = [];
 
-  WidgetTreeBloc _widgetTreeBloc;
+  // FilePickerCross _file;
+  late WidgetTreeBloc _widgetTreeBloc;
 
   @override
   void initState() {
@@ -28,7 +32,7 @@ class _TreeViewState extends State<TreeView>
 
     _widgetTreeBloc = context.read<WidgetTreeBloc>();
 
-    _subscriptions.add(_widgetTreeBloc.stream.listen((event) {
+    _subscriptions.add(_widgetTreeBloc.stream!.listen((event) {
       if (mounted == true) {
         setState(() {});
       }
@@ -37,7 +41,7 @@ class _TreeViewState extends State<TreeView>
 
   @override
   void dispose() {
-    _subscriptions?.forEach((sub) => sub.cancel());
+    _subscriptions.forEach((sub) => sub.cancel());
     _subscriptions.clear();
 
     super.dispose();
@@ -123,15 +127,104 @@ class _TreeViewState extends State<TreeView>
   @override
   Widget build(BuildContext context) {
     var numSupportedChildren =
-        _widgetTreeBloc.current?.builder()?.numSupportedChildren ?? 0;
+        _widgetTreeBloc.current?.builder().numSupportedChildren ?? 0;
     var actualChildren = _widgetTreeBloc.current?.children?.length ?? 0;
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.folder_open),
+            onPressed: () async {
+              // var myFile = await FilePickerCross.importFromStorage(
+              //   type: FileTypeCross.custom,
+              //   fileExtension: 'json',
+              // );
+
+              // try {
+              //   var data = myFile.toString();
+              //   var map = json.decode(data);
+              //   var temp = JsonWidgetData.fromDynamic(map);
+
+              //   if (temp != null) {
+              //     _widgetTreeBloc.widget = temp;
+              //   }
+              //   _file = myFile;
+              // } catch (e) {
+              //   _logger.info('Error importing widget', e);
+              // }
+            },
+            tooltip: 'LOAD WIDGET',
+          ),
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _widgetTreeBloc.widget == null
+                ? null
+                : () async {
+                    // try {
+                    //   var data = utf8.encode(_widgetTreeBloc.widget.toString());
+                    //   var file = FilePickerCross(
+                    //     data,
+                    //     path: _file.fileName ?? 'widget.json',
+                    //   );
+                    //   var path = file.exportToStorage();
+                    //   // ignore: avoid_print
+                    //   print(path);
+                    // } catch (e) {
+                    //   _logger.info('Error saving widget', e);
+                    // }
+                  },
+            tooltip: 'SAVE WIDGET',
+          ),
+          IconButton(
+            icon: Icon(Icons.create_new_folder),
+            onPressed: () async {
+              if (_widgetTreeBloc.widget != null) {
+                var result = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text('CANCEL'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          style: ElevatedButton.styleFrom(primary: Colors.red),
+                          child: Text('CLEAR'),
+                        ),
+                      ],
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(
+                            Icons.warning,
+                            size: 64.0,
+                          ),
+                          SizedBox(height: 16.0),
+                          Text(
+                              'Clear current widget data and create a blank tree?'),
+                        ],
+                      ),
+                      title: Text('ARE YOU SURE?'),
+                    );
+                  },
+                );
+                if (result == true) {
+                  _widgetTreeBloc.widget = null;
+                }
+              }
+            },
+            tooltip: 'NEW WIDGET TREE',
+          )
+        ],
         title: Text('Widget Tree'),
       ),
       body: _widgetTreeBloc.widget == null
           ? Center(
-              child: RaisedButton(
+              child: ElevatedButton(
                 onPressed: () async {
                   var data = await Navigator.of(context).push(
                     MaterialPageRoute<JsonWidgetData>(
@@ -164,12 +257,11 @@ class _TreeViewState extends State<TreeView>
               children: [
                 Expanded(
                   child: ListView(
-                    children: _buildTree(_widgetTreeBloc.widget),
+                    children: _buildTree(_widgetTreeBloc.widget!),
                   ),
                 ),
                 AnimatedSize(
                   duration: Duration(milliseconds: 300),
-                  vsync: this,
                   child: _widgetTreeBloc.current == null
                       ? SizedBox()
                       : Padding(
@@ -205,14 +297,14 @@ class _TreeViewState extends State<TreeView>
                                       var parent =
                                           _widgetTreeBloc.findParentOfWidget(
                                         _widgetTreeBloc.widget,
-                                        _widgetTreeBloc.current.id,
-                                        _widgetTreeBloc.current.type,
+                                        _widgetTreeBloc.current!.id,
+                                        _widgetTreeBloc.current!.type,
                                       );
 
                                       if (parent == null) {
                                         _widgetTreeBloc.widget = null;
                                       } else {
-                                        parent.children.remove(
+                                        parent.children!.remove(
                                           _widgetTreeBloc.current,
                                         );
                                       }
@@ -265,7 +357,8 @@ class _TreeViewState extends State<TreeView>
                                                       var newData =
                                                           _widgetTreeBloc
                                                               .addWidget(
-                                                        _widgetTreeBloc.current,
+                                                        _widgetTreeBloc
+                                                            .current!,
                                                         data,
                                                       );
 
@@ -306,7 +399,7 @@ class _TreeViewState extends State<TreeView>
                                         MaterialPageRoute(
                                           builder: (BuildContext context) =>
                                               WidgetPropertiesEditor(
-                                            data: _widgetTreeBloc.current,
+                                            data: _widgetTreeBloc.current!,
                                           ),
                                         ),
                                       );

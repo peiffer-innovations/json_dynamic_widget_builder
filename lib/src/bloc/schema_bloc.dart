@@ -4,16 +4,16 @@ import 'package:json_schema2/json_schema2.dart';
 import 'package:json_theme/json_theme_schemas.dart';
 
 class SchemaBloc {
-  StreamController<void> _controller = StreamController<void>.broadcast();
+  StreamController<void>? _controller = StreamController<void>.broadcast();
 
-  JsonSchema _current;
+  JsonSchema? _current;
 
-  JsonSchema get current => _current;
-  Stream<void> get stream => _controller?.stream;
+  JsonSchema? get current => _current;
+  Stream<void>? get stream => _controller?.stream;
 
-  set current(JsonSchema current) {
+  set current(JsonSchema? current) {
     _current = current;
-    _controller.add(null);
+    _controller!.add(null);
   }
 
   void dispose() {
@@ -22,7 +22,7 @@ class SchemaBloc {
   }
 
   JsonSchema getSchema(String schemaId) {
-    RefProvider refProvider;
+    RefProvider? refProvider;
     refProvider = (String ref) {
       var schema = SchemaCache().getSchema(ref);
       if (schema == null) {
@@ -35,8 +35,7 @@ class SchemaBloc {
       );
     };
 
-    var schemaData = SchemaCache().getSchema(schemaId);
-    assert(schemaData != null, 'Cannot find schema: $schemaId');
+    var schemaData = SchemaCache().getSchema(schemaId)!;
     var jsonSchema = JsonSchema.createSchema(
       schemaData,
       refProvider: refProvider,

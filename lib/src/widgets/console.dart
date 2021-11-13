@@ -5,7 +5,7 @@ import 'package:logging/logging.dart';
 
 class Console extends StatefulWidget {
   Console({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -43,7 +43,7 @@ class _ConsoleState extends State<Console> {
         setState(() {});
       }
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
         _controller.animateTo(
           _controller.position.maxScrollExtent,
           curve: Curves.linear,
@@ -55,7 +55,7 @@ class _ConsoleState extends State<Console> {
 
   @override
   void dispose() {
-    _subscriptions?.forEach((sub) => sub.cancel());
+    _subscriptions.forEach((sub) => sub.cancel());
     _subscriptions.clear();
 
     super.dispose();
@@ -108,7 +108,7 @@ class _ConsoleState extends State<Console> {
                   fontFamilyFallback: ['monospace', 'Courier'],
                 ),
               ),
-              itemCount: _lines?.length ?? 0,
+              itemCount: _lines.length,
             ),
           ),
         ],

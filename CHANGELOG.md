@@ -1,3 +1,8 @@
+## [0.9.1] - November 13th, 2021
+
+* Finally able to spend some time on this again... fixed several bugs.
+
+
 ## [0.9.0] - December 30th, 2020
 
 * Core features are working.  Preparing for real release.

@@ -8,7 +8,7 @@ import 'package:json_dynamic_widget_builder/src/widgets/widgets_panel.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

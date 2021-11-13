@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 class SchemaView extends StatefulWidget {
   SchemaView({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -22,8 +22,8 @@ class _SchemaViewState extends State<SchemaView> {
   static final Logger _logger = Logger('_SchemaViewState');
   final List<StreamSubscription> _subscriptions = [];
 
-  JsonSchema _current;
-  String _markdown;
+  JsonSchema? _current;
+  String? _markdown;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _SchemaViewState extends State<SchemaView> {
 
     var schemaBloc = context.read<SchemaBloc>();
 
-    _subscriptions.add(schemaBloc.stream.listen((event) {
+    _subscriptions.add(schemaBloc.stream!.listen((event) {
       if (_current?.id?.toString() != schemaBloc.current?.id?.toString()) {
         _current = schemaBloc.current;
         _loadData();
@@ -57,19 +57,17 @@ class _SchemaViewState extends State<SchemaView> {
     }
     if (_current != null) {
       try {
-        var paths = _current.id.pathSegments;
+        var paths = _current!.id!.pathSegments;
         var lastTwo = '${paths[paths.length - 2]}/${paths[paths.length - 1]}';
         lastTwo = lastTwo.substring(0, lastTwo.length - '.json'.length);
         var mdUrl =
             'https://peiffer-innovations.github.io/flutter_json_schemas/docs/${lastTwo}.md';
 
-        var data = await get(mdUrl);
-        if (data != null) {
-          _markdown = utf8.decode(data.bodyBytes);
-        }
+        var data = await get(Uri.parse(mdUrl));
+        _markdown = utf8.decode(data.bodyBytes);
       } catch (e) {
-        _markdown = 'ERROR: loading help for schema -- ${_current.id}';
-        _logger.info('ERROR loading help file: ${_current.id}', e);
+        _markdown = 'ERROR: loading help for schema -- ${_current!.id}';
+        _logger.info('ERROR loading help file: ${_current!.id}', e);
       }
     }
 
@@ -104,7 +102,7 @@ class _SchemaViewState extends State<SchemaView> {
                       child: CircularProgressIndicator(),
                     )
                   : Markdown(
-                      data: _markdown,
+                      data: _markdown!,
                     ),
         ),
       ],

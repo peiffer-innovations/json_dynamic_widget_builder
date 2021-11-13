@@ -10,7 +10,7 @@ class SembastBloc {
 
   final Map<String, Database> _databases = {};
 
-  Database getDatabase(String dbName) => _databases[dbName];
+  Database? getDatabase(String dbName) => _databases[dbName];
 
   Future<void> initialize() async {
     DatabaseFactory dbFactory;

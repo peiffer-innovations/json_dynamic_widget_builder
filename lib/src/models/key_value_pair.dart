@@ -4,8 +4,8 @@ import 'package:uuid/uuid.dart';
 @immutable
 class KeyValuePair<X, Y> {
   KeyValuePair({
-    @required this.key,
-    @required this.value,
+    required this.key,
+    required this.value,
   }) : assert(key != null);
 
   final id = Uuid().v4();
@@ -13,8 +13,8 @@ class KeyValuePair<X, Y> {
   final Y value;
 
   KeyValuePair copyWith({
-    String key,
-    String value,
+    String? key,
+    String? value,
   }) =>
       KeyValuePair(
         key: key ?? this.key,

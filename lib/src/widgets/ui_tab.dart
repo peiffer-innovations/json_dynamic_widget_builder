@@ -3,37 +3,39 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/widget_tree_bloc.dart';
+import 'package:json_dynamic_widget_builder/src/models/simulated_device.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 class UiTab extends StatefulWidget {
   UiTab({
     this.all = true,
-    this.highRatio = 9,
+    this.device,
+    this.landscape = false,
     this.leftAlign = true,
+    this.strictSize = true,
     this.topAlign = true,
-    this.wideRatio = 16,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final bool all;
-  final int highRatio;
+  final SimulatedDevice? device;
+  final bool landscape;
   final bool leftAlign;
-
+  final bool strictSize;
   final bool topAlign;
-  final int wideRatio;
 
   @override
   _UiTabState createState() => _UiTabState();
 }
 
 class _UiTabState extends State<UiTab> {
-  static final Logger _logger = Logger('Ui');
+  static final Logger _logger = Logger('UiTab');
   final List<StreamSubscription> _subscriptions = [];
 
-  Widget _built;
+  Widget? _built;
   UniqueKey _uniqueKey = UniqueKey();
-  WidgetTreeBloc _widgetTreeBloc;
+  late WidgetTreeBloc _widgetTreeBloc;
 
   @override
   void initState() {
@@ -41,7 +43,7 @@ class _UiTabState extends State<UiTab> {
 
     _widgetTreeBloc = context.read<WidgetTreeBloc>();
 
-    _subscriptions.add(_widgetTreeBloc.stream.listen((event) {
+    _subscriptions.add(_widgetTreeBloc.stream!.listen((event) {
       _rebuild();
     }));
     _rebuild();
@@ -49,20 +51,20 @@ class _UiTabState extends State<UiTab> {
 
   @override
   void didUpdateWidget(Widget oldWidget) {
-    super.didUpdateWidget(oldWidget);
+    super.didUpdateWidget(oldWidget as UiTab);
 
     _rebuild();
   }
 
   @override
   void dispose() {
-    _subscriptions?.forEach((sub) => sub.cancel());
+    _subscriptions.forEach((sub) => sub.cancel());
     _subscriptions.clear();
 
     super.dispose();
   }
 
-  Widget _neverNullWidget(BuildContext context, Widget widget) =>
+  Widget _neverNullWidget(BuildContext context, Widget? widget) =>
       widget ??
       Container(
         constraints: BoxConstraints(
@@ -98,39 +100,76 @@ class _UiTabState extends State<UiTab> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
+    final ratio = widget.landscape == true
+        ? widget.device?.dips.flipped.aspectRatio
+        : widget.device?.dips.aspectRatio;
+    final size = widget.landscape == true
+        ? widget.device?.dips.flipped
+        : widget.device?.dips;
+
+    return Container(
+      alignment: widget.leftAlign == true
+          ? widget.topAlign == true
+              ? Alignment.topLeft
+              : Alignment.centerLeft
+          : widget.topAlign == true
+              ? Alignment.topCenter
+              : Alignment.center,
       key: _uniqueKey,
-      builder: (context, constraints) {
-        final ratio = min(
-          constraints.maxWidth / widget.wideRatio,
-          constraints.maxHeight / widget.highRatio,
-        );
-        return Center(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.white,
+      child: Container(
+        constraints: size == null
+            ? null
+            : BoxConstraints(
+                minHeight: size.height,
+                minWidth: size.width,
               ),
-            ),
-            alignment: widget.leftAlign == true
-                ? widget.topAlign == true
-                    ? Alignment.topLeft
-                    : Alignment.centerLeft
-                : widget.topAlign == true
-                    ? Alignment.topCenter
-                    : Alignment.center,
-            height: ratio * widget.highRatio,
-            width: ratio * widget.wideRatio,
-            child: _built ??
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('NOTHING SELECTED'),
-                  ),
+        decoration: ratio == null
+            ? null
+            : BoxDecoration(
+                border: Border.all(
+                  color: Colors.white,
                 ),
-          ),
-        );
-      },
+              ),
+        child: LayoutBuilder(
+          builder: (BuildContext context, constraints) {
+            Widget result = Container(
+              constraints: BoxConstraints(
+                maxHeight: constraints.maxHeight,
+                maxWidth: constraints.maxWidth,
+              ),
+              child: _built ??
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text('NOTHING SELECTED'),
+                    ),
+                  ),
+            );
+
+            if (size != null) {
+              if (ratio != null) {
+                result = AspectRatio(
+                  aspectRatio: ratio,
+                  child: result,
+                );
+              }
+              result = SizedBox(
+                height: size.height,
+                width: size.width,
+                child: result,
+              );
+              if (widget.strictSize != true) {
+                var scale = max(1.0, constraints.maxHeight / size.height);
+                result = Transform.scale(
+                  scale: scale,
+                  child: result,
+                );
+              }
+            }
+            return result;
+          },
+        ),
+      ),
     );
   }
 }

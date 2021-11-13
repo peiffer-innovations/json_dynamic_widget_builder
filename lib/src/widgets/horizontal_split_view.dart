@@ -2,17 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:tinycolor/tinycolor.dart';
+import 'package:json_dynamic_widget_builder/src/tinycolor/tinycolor.dart';
 
 class HorizontalSplitView extends StatefulWidget {
   const HorizontalSplitView({
-    @required this.bottom,
-    Key key,
+    required this.bottom,
+    Key? key,
     this.ratio = 0.76,
-    @required this.top,
-  })  : assert(bottom != null),
-        assert(top != null),
-        assert(ratio >= 0),
+    required this.top,
+  })  : assert(ratio >= 0),
         assert(ratio <= 1),
         super(key: key);
 
@@ -27,13 +25,13 @@ class HorizontalSplitView extends StatefulWidget {
 class _HorizontalSplitViewState extends State<HorizontalSplitView> {
   final _dividerHeight = 16.0;
 
-  double _maxHeight;
+  double? _maxHeight;
   //from 0-1
-  double _ratio;
+  late double _ratio;
 
-  double get _height1 => _ratio * _maxHeight;
+  double get _height1 => _ratio * _maxHeight!;
 
-  double get _height2 => (1 - _ratio) * _maxHeight;
+  double get _height2 => (1 - _ratio) * _maxHeight!;
 
   @override
   void initState() {
@@ -67,7 +65,7 @@ class _HorizontalSplitViewState extends State<HorizontalSplitView> {
                 behavior: HitTestBehavior.translucent,
                 onPanUpdate: (DragUpdateDetails details) {
                   setState(() {
-                    _ratio += details.delta.dy / _maxHeight;
+                    _ratio += details.delta.dy / _maxHeight!;
                     if (_ratio > 1) {
                       _ratio = 1;
                     } else if (_ratio < 0.0) {

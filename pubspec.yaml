@@ -7,28 +7,30 @@ publish_to: "none"
 version: 0.9.0
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 analyzer:
-  exclude: [lib/generated/**]
+  exclude: [lib/generated_plugin_registrant.dart]
 
 dependencies:
-  child_builder: ^1.0.0+2
+  child_builder: ^2.0.0
+  #file_picker_cross: ^4.3.0
   flutter:
     sdk: flutter
-  flutter_markdown: ^0.5.1
-  form_validation: ^1.0.1
-  json_class: ^1.0.6
-  json_conditional: ^1.0.3
-  json_dynamic_widget: ^1.4.0
-  json_schema2: ^1.0.0
-  json_theme: ^1.5.0+1
-  logging: ^0.11.4
-  meta: ^1.2.4
-  provider: 4.3.2+2
-  sembast: ^2.4.8
-  sembast_web: ^1.2.0
-  tinycolor: ^1.0.3
+  flutter_markdown: ^0.6.8
+  form_validation: ^2.0.0+1
+  json_class: ^2.0.0+2
+  json_conditional: ^2.0.0+2
+  json_dynamic_widget: ^3.1.1+1
+  json_dynamic_widget_plugin_svg: ^1.0.0
+  json_schema2: ^2.0.0+3
+  json_theme: ^3.1.0
+  logging: ^1.0.2
+  meta: ^1.7.0
+  pigment: ^1.0.4
+  provider: ^6.0.1
+  sembast: ^3.1.1
+  sembast_web: ^2.0.1+1
 
 dev_dependencies:
   flutter_test:
@@ -42,3 +44,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/devices.json

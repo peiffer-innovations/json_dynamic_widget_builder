@@ -5,21 +5,21 @@ import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 // import 'package:json_theme/json_theme_schemas.dart';
 
 class WidgetTreeBloc {
-  StreamController<void> _controller = StreamController<void>.broadcast();
+  StreamController<void>? _controller = StreamController<void>.broadcast();
 
-  JsonWidgetData _current;
-  JsonWidgetData _widget;
+  JsonWidgetData? _current;
+  JsonWidgetData? _widget;
 
-  JsonWidgetData get current => _current;
-  Stream<void> get stream => _controller?.stream;
-  JsonWidgetData get widget => _widget;
+  JsonWidgetData? get current => _current;
+  Stream<void>? get stream => _controller?.stream;
+  JsonWidgetData? get widget => _widget;
 
-  set current(JsonWidgetData current) {
+  set current(JsonWidgetData? current) {
     _current = current;
-    _controller.add(null);
+    _controller!.add(null);
   }
 
-  set widget(JsonWidgetData widget) {
+  set widget(JsonWidgetData? widget) {
     if (widget == null) {
       _widget = null;
     } else {
@@ -29,12 +29,12 @@ class WidgetTreeBloc {
     if (_current != null && _widget != null) {
       _current = findInWidget(
         _widget,
-        _current.id,
-        _current.type,
+        _current!.id,
+        _current!.type,
       );
     }
 
-    _controller.add(null);
+    _controller!.add(null);
   }
 
   void dispose() {
@@ -42,7 +42,7 @@ class WidgetTreeBloc {
     _controller = null;
   }
 
-  JsonWidgetData addWidget(JsonWidgetData parent, JsonWidgetData widget) {
+  JsonWidgetData? addWidget(JsonWidgetData parent, JsonWidgetData widget) {
     var children =
         List<JsonWidgetData>.from(parent.children ?? <JsonWidgetData>[]);
 
@@ -53,14 +53,14 @@ class WidgetTreeBloc {
     return replace(parent, newParent);
   }
 
-  dynamic findInValues(dynamic values, JsonWidgetData widget) {
+  dynamic findInValues(dynamic values, JsonWidgetData? widget) {
     dynamic result;
 
     if (values is Map) {
-      if (values['id'] == widget.id && values['type'] == widget.type) {
+      if (values['id'] == widget!.id && values['type'] == widget.type) {
         result = values;
       } else {
-        values?.forEach((key, value) {
+        values.forEach((key, value) {
           result ??= findInValues(value, widget);
         });
       }
@@ -76,12 +76,12 @@ class WidgetTreeBloc {
     return result;
   }
 
-  JsonWidgetData findInWidget(
-    JsonWidgetData widget,
+  JsonWidgetData? findInWidget(
+    JsonWidgetData? widget,
     String id,
     String type,
   ) {
-    JsonWidgetData result;
+    JsonWidgetData? result;
 
     if (widget?.id == id && widget?.type == type) {
       result = widget;
@@ -94,13 +94,13 @@ class WidgetTreeBloc {
     return result;
   }
 
-  JsonWidgetData findParentOfWidget(
-    JsonWidgetData widget,
+  JsonWidgetData? findParentOfWidget(
+    JsonWidgetData? widget,
     String id,
     String type, {
-    JsonWidgetData parent,
+    JsonWidgetData? parent,
   }) {
-    JsonWidgetData result;
+    JsonWidgetData? result;
 
     if (widget?.id == id && widget?.type == type) {
       result = parent;
@@ -122,8 +122,9 @@ class WidgetTreeBloc {
     _controller?.add(null);
   }
 
-  JsonWidgetData replace(JsonWidgetData oldWidget, [JsonWidgetData newWidget]) {
-    var values = _widget.toJson();
+  JsonWidgetData? replace(JsonWidgetData? oldWidget,
+      [JsonWidgetData? newWidget]) {
+    var values = _widget!.toJson();
 
     var toReplace = findInValues(values, oldWidget);
     toReplace.clear();
