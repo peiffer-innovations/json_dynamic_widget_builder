@@ -1,0 +1,227 @@
+[
+  {
+    "dips": [
+      411,
+      617
+    ],
+    "name": "Blackberry BBB100",
+    "os": "android",
+    "scale": 2.625
+  },
+  {
+    "dips": [
+      423,
+      878
+    ],
+    "name": "Huawei P20 Pro",
+    "os": "android",
+    "scale": 2.55
+  },
+  {
+    "dips": [
+      411,
+      683
+    ],
+    "name": "Google Nexus 6P",
+    "os": "android",
+    "scale": 3.5
+  },
+  {
+    "dips": [
+      411,
+      683
+    ],
+    "name": "Google Pixel 2 (old nav)",
+    "os": "android",
+    "scale": 2.625
+  },
+  {
+    "dips": [
+      411,
+      715
+    ],
+    "name": "Google Pixel 2 (new nav)",
+    "os": "android",
+    "scale": 2.625
+  },
+  {
+    "dips": [
+      392,
+      737
+    ],
+    "name": "Google Pixel 3",
+    "os": "android",
+    "scale": 2.75
+  },
+  {
+    "dips": [
+      392,
+      759
+    ],
+    "name": "Google Pixel 3a",
+    "os": "android",
+    "scale": 2.75
+  },
+  {
+    "dips": [
+      411,
+      797
+    ],
+    "name": "Google Pixel 3 XL",
+    "os": "android",
+    "scale": 3.5
+  },
+  {
+    "dips": [
+      411,
+      852
+    ],
+    "name": "Google Pixel 4 XL",
+    "os": "android",
+    "scale": 3.5
+  },
+  {
+    "dips": [
+      392,
+      834
+    ],
+    "name": "Google Pixel 5",
+    "os": "android",
+    "scale": 2.75
+  },
+  {
+    "dips": [
+      411,
+      797
+    ],
+    "name": "Samsung Galaxy Note 8",
+    "os": "android",
+    "scale": 2.625
+  },
+  {
+    "dips": [
+      411,
+      797
+    ],
+    "name": "Samsung Galaxy Note 9",
+    "os": "android",
+    "scale": 2.625
+  },
+  {
+    "dips": [
+      360,
+      740
+    ],
+    "name": "Samsung Galaxy S8",
+    "os": "android",
+    "scale": 3.0
+  },
+  {
+    "dips": [
+      360,
+      692
+    ],
+    "name": "Samsung Galaxy S9",
+    "os": "android",
+    "scale": 3.0
+  },
+  {
+    "dips": [
+      360,
+      712
+    ],
+    "name": "Samsung Galaxy S10",
+    "os": "android",
+    "scale": 3.0
+  },
+  {
+    "dips": [
+      663,
+      1138
+    ],
+    "name": "Samsung Galaxy Tab S5e",
+    "os": "android",
+    "scale": 2.25
+  },
+  {
+    "dips": [
+      768,
+      1024
+    ],
+    "name": "Apple iPad",
+    "os": "ios",
+    "scale": 2.0
+  },
+  {
+    "dips": [
+      834,
+      1112
+    ],
+    "name": "Apple iPad Air",
+    "os": "ios",
+    "scale": 2.0
+  },
+  {
+    "dips": [
+      1024,
+      1366
+    ],
+    "name": "Apple iPad Pro 12in",
+    "os": "ios",
+    "scale": 2.0
+  },
+  {
+    "dips": [
+      320,
+      568
+    ],
+    "name": "Apple iPhone5",
+    "os": "ios",
+    "scale": 2.0
+  },
+  {
+    "dips": [
+      375,
+      667
+    ],
+    "name": "Apple iPhone6",
+    "os": "ios",
+    "scale": 2.0
+  },
+  {
+    "dips": [
+      414,
+      736
+    ],
+    "name": "Apple iPhone7Plus",
+    "os": "ios",
+    "scale": 3.0
+  },
+  {
+    "dips": [
+      375,
+      812
+    ],
+    "name": "Apple iPhoneX",
+    "os": "ios",
+    "scale": 3.0
+  },
+  {
+    "dips": [
+      414,
+      896
+    ],
+    "name": "Apple iPhone 11",
+    "os": "ios",
+    "scale": 2.0
+  },
+  {
+    "dips": [
+      320,
+      568
+    ],
+    "name": "Apple iPod Touch",
+    "os": "ios",
+    "scale": 2.0
+  }
+]
