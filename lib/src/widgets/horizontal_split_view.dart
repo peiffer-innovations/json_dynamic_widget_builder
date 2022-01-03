@@ -1,7 +1,6 @@
 // Sourced from: https://medium.com/@leonar.d/how-to-create-a-flutter-split-view-7e2ac700ea12
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:json_dynamic_widget_builder/src/tinycolor/tinycolor.dart';
 
 class HorizontalSplitView extends StatefulWidget {

@@ -4,7 +4,7 @@ homepage: https://github.com/peiffer-innovations/json_dynamic_widget_builder
 
 publish_to: "none"
 
-version: 0.9.0
+version: 0.9.1+1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -18,13 +18,13 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_markdown: ^0.6.8
-  form_validation: ^2.0.0+1
-  json_class: ^2.0.0+2
-  json_conditional: ^2.0.0+2
-  json_dynamic_widget: ^3.1.1+1
+  form_validation: ^2.1.0
+  json_class: ^2.1.2+1
+  json_conditional: ^2.1.0
+  json_dynamic_widget: ^3.6.0
   json_dynamic_widget_plugin_svg: ^1.0.0
   json_schema2: ^2.0.0+3
-  json_theme: ^3.1.0
+  json_theme: ^3.2.3+1
   logging: ^1.0.2
   meta: ^1.7.0
   pigment: ^1.0.4

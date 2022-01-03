@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:json_class/json_class.dart';
-import 'package:meta/meta.dart';
 
 @immutable
 class SimulatedDevice extends JsonClass {
