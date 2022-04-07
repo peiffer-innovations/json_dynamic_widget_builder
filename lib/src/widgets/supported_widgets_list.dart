@@ -61,7 +61,7 @@ class _SupportedWidgetsListState extends State<SupportedWidgetsList> {
                     args: <String, dynamic>{},
                     builder: () {
                       return builder(
-                        registry.processDynamicArgs(<String, dynamic>{}).values,
+                        registry.processArgs(<String, dynamic>{}, null),
                         registry: registry,
                       )!;
                     },
