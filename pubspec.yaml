@@ -2,12 +2,12 @@ name: json_dynamic_widget_builder
 description: An application to allow for building dynamic widgets via JSON in a WYSIWYG editor.
 homepage: https://github.com/peiffer-innovations/json_dynamic_widget_builder
 
-publish_to: "none"
+publish_to: 'none'
 
 version: 0.9.1+1
 
 environment:
-  sdk: ">=2.16.0 <3.0.0"
+  sdk: '>=2.17.0 <3.0.0'
 
 analyzer:
   exclude: [lib/generated_plugin_registrant.dart]
@@ -17,19 +17,19 @@ dependencies:
   #file_picker_cross: ^4.3.0
   flutter:
     sdk: flutter
-  flutter_markdown: ^0.6.8
+  flutter_markdown: ^0.6.10
   form_validation: ^2.1.0+2
   json_class: ^2.1.2+4
   json_conditional: ^2.1.0+3
-  json_dynamic_widget: ^4.1.0
-  json_dynamic_widget_plugin_svg: ^2.0.0-beta
-  json_schema2: ^2.0.1+1
-  json_theme: ^3.3.1
-  logging: ^1.0.2
+  json_dynamic_widget: ^5.0.0
+  json_dynamic_widget_plugin_svg: ^3.0.0
+  json_schema2: ^2.0.2
+  json_theme: ^4.0.0
+  logging: ^1.0.1
   meta: ^1.7.0
   pigment: ^1.0.4
   provider: ^6.0.1
-  sembast: ^3.1.1
+  sembast: ^3.2.0
   sembast_web: ^2.0.1+1
 
 dev_dependencies:
@@ -41,6 +41,28 @@ dev_dependencies:
 #     path: ../json_dynamic_widget
 #   json_theme:
 #     path: ../json_theme
+
+ignore_updates:
+  # Ignoring everything in flutter_test as those are all point-in-time entries
+  # can't upgrade without upgrading Flutter itself.
+  - 'async'
+  - 'boolean_selector'
+  - 'characters'
+  - 'charcode'
+  - 'collection'
+  - 'clock'
+  - 'fake_async'
+  - 'file'
+  - 'matcher'
+  - 'material_color_utilities'
+  - 'meta'
+  - 'path'
+  - 'source_span'
+  - 'stack_trace'
+  - 'stream_channel'
+  - 'string_scanner'
+  - 'term_glyph'
+  - 'vector_math'
 
 flutter:
   uses-material-design: true

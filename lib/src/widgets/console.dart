@@ -43,7 +43,7 @@ class _ConsoleState extends State<Console> {
         setState(() {});
       }
 
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _controller.animateTo(
           _controller.position.maxScrollExtent,
           curve: Curves.linear,
