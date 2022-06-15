@@ -1,3 +1,15 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [WORK IN PROGRESS -- not production ready](#work-in-progress----not-production-ready)
+- [json_dynamic_widget_builder](#json_dynamic_widget_builder)
+  - [Table of Contents](#table-of-contents)
+  - [Live Example](#live-example)
+  - [Introduction](#introduction)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # WORK IN PROGRESS -- not production ready
 
 # json_dynamic_widget_builder
