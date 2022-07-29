@@ -42,15 +42,15 @@ dev_dependencies:
 #   json_theme:
 #     path: ../json_theme
 
-ignore_updates:
-  # Ignoring everything in flutter_test as those are all point-in-time entries
-  # can't upgrade without upgrading Flutter itself.
+ignore_updates: 
+  - 'archive'
   - 'async'
   - 'boolean_selector'
   - 'characters'
   - 'charcode'
   - 'collection'
   - 'clock'
+  - 'crypto'
   - 'fake_async'
   - 'file'
   - 'matcher'
@@ -61,8 +61,12 @@ ignore_updates:
   - 'stack_trace'
   - 'stream_channel'
   - 'string_scanner'
+  - 'sync_http'
   - 'term_glyph'
+  - 'test_api'
+  - 'typed_data'
   - 'vector_math'
+  - 'webdriver'
 
 flutter:
   uses-material-design: true
