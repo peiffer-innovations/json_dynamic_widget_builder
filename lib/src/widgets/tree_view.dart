@@ -191,7 +191,7 @@ class _TreeViewState extends State<TreeView>
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(true),
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.red,
+                            backgroundColor: Colors.red,
                           ),
                           child: Text('CLEAR'),
                         ),
