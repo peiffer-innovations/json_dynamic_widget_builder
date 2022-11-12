@@ -7,7 +7,7 @@ publish_to: 'none'
 version: 0.9.1+1
 
 environment:
-  sdk: '>=2.17.0 <3.0.0'
+  sdk: '>=2.18.0 <3.0.0'
 
 analyzer:
   exclude: [lib/generated_plugin_registrant.dart]
@@ -42,7 +42,7 @@ dev_dependencies:
 #   json_theme:
 #     path: ../json_theme
 
-ignore_updates: 
+ignore_updates:
   - 'archive'
   - 'async'
   - 'boolean_selector'

@@ -27,10 +27,10 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          channel: 'stable'
 
       - name: Validate
-        uses: peiffer-innovations/actions-flutter-validate@v1.1.2
+        uses: peiffer-innovations/actions-flutter-validate@v1.1.3
         with:
           flutter_package: true
 
