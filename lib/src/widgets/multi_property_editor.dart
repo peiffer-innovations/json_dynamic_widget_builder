@@ -40,11 +40,11 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
 
     _values = widget.values;
 
-    var schema = widget.schema;
+    final schema = widget.schema;
 
     var props = _getAllProperties(schema);
 
-    var properties = <Widget>[];
+    final properties = <Widget>[];
     props = SplayTreeMap.from(props);
     props.forEach((key, value) {
       if (value.ref != null) {
@@ -90,7 +90,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
     JsonSchema? parent,
   }) {
     Widget result;
-    var enumValues = <String>{};
+    final enumValues = <String>{};
     var isBool = false;
     var isNumber = false;
     JsonSchema? dynWidgetRef;
@@ -98,7 +98,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
 
     // var props = _getAllProperties(schema);
 
-    var checkSchema = (JsonSchema schema) {
+    final checkSchema = (JsonSchema schema) {
       if (schema.ref != null) {
         schema = _schemaBloc.getSchema(schema.ref.toString());
       }
@@ -111,7 +111,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
         enumValues.addAll(List<String>.from(schema.enumValues!));
       }
       try {
-        var type = schema.type?.toString();
+        final type = schema.type?.toString();
         switch (type) {
           case 'boolean':
             isBool = true;
@@ -181,7 +181,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: Icon(Icons.chevron_right),
+        trailing: const Icon(Icons.chevron_right),
       );
     } else if (objRef != null) {
       result = ListTile(
@@ -213,15 +213,15 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: Icon(Icons.chevron_right),
+        trailing: const Icon(Icons.chevron_right),
       );
     } else if (isBool == true) {
       result = DropdownButtonFormField(
         decoration: InputDecoration(labelText: key),
         items: [
-          DropdownMenuItem(value: 'null', child: Text('')),
-          DropdownMenuItem(value: true, child: Text('true')),
-          DropdownMenuItem(value: false, child: Text('false')),
+          const DropdownMenuItem(value: 'null', child: Text('')),
+          const DropdownMenuItem(value: true, child: Text('true')),
+          const DropdownMenuItem(value: false, child: Text('false')),
         ],
         onChanged: (dynamic value) {
           _values[key] = value == 'null' ? null : value;
@@ -237,7 +237,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
         autovalidateMode: AutovalidateMode.always,
         decoration: InputDecoration(labelText: key),
         items: [
-          DropdownMenuItem(value: 'null', child: Text('')),
+          const DropdownMenuItem(value: 'null', child: Text('')),
           ...[
             for (var e in enumValues)
               DropdownMenuItem(value: e, child: Text(e)),
@@ -344,7 +344,7 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.id)),
       body: _properties?.isNotEmpty != true
-          ? Center(
+          ? const Center(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text('UNKNOWN SCHEMA'),
@@ -355,11 +355,11 @@ class _MultiPropertyEditorState extends State<MultiPropertyEditor> {
                 Expanded(
                   child: ListView.builder(
                     itemBuilder: (BuildContext context, int index) => Padding(
-                      padding: EdgeInsets.only(bottom: 16.0),
+                      padding: const EdgeInsets.only(bottom: 16.0),
                       child: _properties![index],
                     ),
                     itemCount: _properties!.length,
-                    padding: EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16.0),
                   ),
                 ),
               ],

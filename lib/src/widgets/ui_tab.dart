@@ -67,17 +67,17 @@ class _UiTabState extends State<UiTab> {
   Widget _neverNullWidget(BuildContext context, Widget? widget) =>
       widget ??
       Container(
-        constraints: BoxConstraints(
+        constraints: const BoxConstraints(
           maxHeight: 40.0,
           minWidth: 40.0,
         ),
-        color: Color(0xff444444),
-        child: Placeholder(),
+        color: const Color(0xff444444),
+        child: const Placeholder(),
       );
 
   void _rebuild() {
     try {
-      var widget = this.widget.all == true
+      final widget = this.widget.all == true
           ? _widgetTreeBloc.widget ?? _widgetTreeBloc.current
           : _widgetTreeBloc.current;
       if (widget == null) {
@@ -138,7 +138,7 @@ class _UiTabState extends State<UiTab> {
                 maxWidth: constraints.maxWidth,
               ),
               child: _built ??
-                  Center(
+                  const Center(
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Text('NOTHING SELECTED'),
@@ -159,7 +159,7 @@ class _UiTabState extends State<UiTab> {
                 child: result,
               );
               if (widget.strictSize != true) {
-                var scale = max(1.0, constraints.maxHeight / size.height);
+                final scale = max(1.0, constraints.maxHeight / size.height);
                 result = Transform.scale(
                   scale: scale,
                   child: result,

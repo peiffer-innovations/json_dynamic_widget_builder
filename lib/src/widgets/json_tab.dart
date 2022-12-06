@@ -37,7 +37,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
     _widgetTreeBloc = context.read<WidgetTreeBloc>();
 
     _animationController = AnimationController(
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
       vsync: this,
     );
 
@@ -58,7 +58,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
 
         if (decoded != null) {
           try {
-            var temp = JsonWidgetData.fromDynamic(decoded);
+            final temp = JsonWidgetData.fromDynamic(decoded);
 
             if (temp != null) {
               _widgetTreeBloc.widget = temp;
@@ -99,13 +99,13 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
 
   void _rebuild() {
     try {
-      var widget = this.widget.all == true
+      final widget = this.widget.all == true
           ? _widgetTreeBloc.widget
           : _widgetTreeBloc.current;
       if (widget == null) {
         _text = '';
       } else {
-        _text = JsonEncoder.withIndent('  ').convert(
+        _text = const JsonEncoder.withIndent('  ').convert(
           widget.toJson(),
         );
       }
@@ -135,7 +135,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
               _text = value;
               _animationController.forward(from: 0.0);
             },
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Courier New',
               fontFamilyFallback: ['monospace', 'Courier'],
             ),
@@ -146,7 +146,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
           right: 0.0,
           top: 0.0,
           child: AnimatedOpacity(
-            duration: Duration(milliseconds: 100),
+            duration: const Duration(milliseconds: 100),
             opacity: _animationController.value == 0.0 ||
                     _animationController.value == 1.0
                 ? 0.0

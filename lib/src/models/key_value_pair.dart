@@ -8,7 +8,7 @@ class KeyValuePair<X, Y> {
     required this.value,
   }) : assert(key != null);
 
-  final id = Uuid().v4();
+  final id = const Uuid().v4();
   final X key;
   final Y value;
 

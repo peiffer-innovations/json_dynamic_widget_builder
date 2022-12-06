@@ -39,13 +39,13 @@ class _SupportedWidgetsListState extends State<SupportedWidgetsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Widget'),
+        title: const Text('Select Widget'),
       ),
       body: Material(
         child: ListView.builder(
           itemCount: _widgets.length,
           itemBuilder: (BuildContext context, int index) {
-            var type = _widgets[index].split('/').last;
+            final type = _widgets[index].split('/').last;
             // type = type.substring(0, type.length - '.json'.length);
 
             return ListTile(
@@ -53,8 +53,8 @@ class _SupportedWidgetsListState extends State<SupportedWidgetsList> {
                 if (_type == type) {
                   Navigator.of(context).pop(null);
                 } else {
-                  var registry = JsonWidgetRegistry.instance;
-                  JsonWidgetBuilder? Function(dynamic,
+                  final registry = JsonWidgetRegistry.instance;
+                  final JsonWidgetBuilder? Function(dynamic,
                           {JsonWidgetRegistry registry}) builder =
                       registry.getWidgetBuilder(type);
                   Navigator.of(context).pop(JsonWidgetData(
@@ -82,7 +82,7 @@ class _SupportedWidgetsListState extends State<SupportedWidgetsList> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              trailing: _type != type ? null : Icon(Icons.check_circle),
+              trailing: _type != type ? null : const Icon(Icons.check_circle),
             );
           },
         ),

@@ -29,7 +29,7 @@ class _SchemaViewState extends State<SchemaView> {
   void initState() {
     super.initState();
 
-    var schemaBloc = context.read<SchemaBloc>();
+    final schemaBloc = context.read<SchemaBloc>();
 
     _subscriptions.add(schemaBloc.stream!.listen((event) {
       if (_current?.id?.toString() != schemaBloc.current?.id?.toString()) {
@@ -57,13 +57,13 @@ class _SchemaViewState extends State<SchemaView> {
     }
     if (_current != null) {
       try {
-        var paths = _current!.id!.pathSegments;
+        final paths = _current!.id!.pathSegments;
         var lastTwo = '${paths[paths.length - 2]}/${paths[paths.length - 1]}';
         lastTwo = lastTwo.substring(0, lastTwo.length - '.json'.length);
-        var mdUrl =
+        final mdUrl =
             'https://peiffer-innovations.github.io/flutter_json_schemas/docs/${lastTwo}.md';
 
-        var data = await get(Uri.parse(mdUrl));
+        final data = await get(Uri.parse(mdUrl));
         _markdown = utf8.decode(data.bodyBytes);
       } catch (e) {
         _markdown = 'ERROR: loading help for schema -- ${_current!.id}';
@@ -84,21 +84,21 @@ class _SchemaViewState extends State<SchemaView> {
       children: [
         if (_current != null) ...[
           Container(
-            padding: EdgeInsets.fromLTRB(4.0, 16.0, 4.0, 16.0),
-            child: Text('Help'),
+            padding: const EdgeInsets.fromLTRB(4.0, 16.0, 4.0, 16.0),
+            child: const Text('Help'),
           ),
-          Divider(height: 1.0),
+          const Divider(height: 1.0),
         ],
         Expanded(
           child: _current == null
-              ? Center(
+              ? const Center(
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Text('NOTHING SELECTED'),
                   ),
                 )
               : _markdown == null
-                  ? Center(
+                  ? const Center(
                       child: CircularProgressIndicator(),
                     )
                   : Markdown(

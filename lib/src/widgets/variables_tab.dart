@@ -19,7 +19,7 @@ class _VariablesTabState extends State<VariablesTab> {
   final Map<String, FocusNode> _focusNodes = {};
   final Map<String, String> _temp = {};
   final List<KeyValuePair<String, String?>> _vars = [];
-  String _emptyUuid = Uuid().v4();
+  String _emptyUuid = const Uuid().v4();
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _VariablesTabState extends State<VariablesTab> {
   void _updateFocusNodes() {
     for (var i = 0; i <= _vars.length; i++) {
       if (_focusNodes['$i|key'] == null) {
-        var node = FocusNode();
+        final node = FocusNode();
         node.addListener(() {
           _updateVariables(i);
         });
@@ -50,8 +50,8 @@ class _VariablesTabState extends State<VariablesTab> {
   }
 
   Future<void> _updateValues() async {
-    var registry = JsonWidgetRegistry.instance;
-    var values = registry.values;
+    final registry = JsonWidgetRegistry.instance;
+    final values = registry.values;
     _vars.clear();
 
     values.forEach(
@@ -65,9 +65,9 @@ class _VariablesTabState extends State<VariablesTab> {
       registry.setValue(v.key, v.value);
     }
 
-    var sembastBloc = context.read<SembastBloc>();
-    var db = sembastBloc.getDatabase(SembastBloc.db_variables)!;
-    var store = StoreRef.main();
+    final sembastBloc = context.read<SembastBloc>();
+    final db = sembastBloc.getDatabase(SembastBloc.db_variables)!;
+    final store = StoreRef.main();
 
     await db.transaction((txn) {
       store.delete(txn);
@@ -83,19 +83,19 @@ class _VariablesTabState extends State<VariablesTab> {
   }
 
   void _updateVariables(int index) {
-    var key = _temp['$index|key'];
-    var value = _temp['$index|value'];
+    final key = _temp['$index|key'];
+    final value = _temp['$index|value'];
 
     if (key == null && value == null && index < _vars.length) {
-      _emptyUuid = Uuid().v4();
+      _emptyUuid = const Uuid().v4();
       _vars.removeAt(index);
     } else {
       if (key != null) {
         if (index >= _vars.length) {
-          _emptyUuid = Uuid().v4();
+          _emptyUuid = const Uuid().v4();
           _vars.add(KeyValuePair(key: key, value: value));
         } else {
-          var kvp = _vars[index];
+          final kvp = _vars[index];
           _vars.removeAt(index);
           _vars.insert(index, kvp);
         }
@@ -111,12 +111,12 @@ class _VariablesTabState extends State<VariablesTab> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           Row(
             children: [
-              Expanded(
+              const Expanded(
                 child: Text(
                   'KEY',
                   style: TextStyle(
@@ -125,7 +125,7 @@ class _VariablesTabState extends State<VariablesTab> {
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: Text(
                   'VALUE',
                   style: TextStyle(
@@ -136,7 +136,7 @@ class _VariablesTabState extends State<VariablesTab> {
               ),
             ],
           ),
-          Divider(height: 1.0),
+          const Divider(height: 1.0),
           Expanded(
             child: ListView.builder(
               itemBuilder: (BuildContext context, int index) => Row(

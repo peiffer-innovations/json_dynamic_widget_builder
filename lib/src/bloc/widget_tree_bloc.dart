@@ -43,12 +43,12 @@ class WidgetTreeBloc {
   }
 
   JsonWidgetData? addWidget(JsonWidgetData parent, JsonWidgetData widget) {
-    var children =
+    final children =
         List<JsonWidgetData>.from(parent.children ?? <JsonWidgetData>[]);
 
     children.add(widget);
 
-    var newParent = parent.copyWith(children: children);
+    final newParent = parent.copyWith(children: children);
 
     return replace(parent, newParent);
   }
@@ -124,9 +124,9 @@ class WidgetTreeBloc {
 
   JsonWidgetData? replace(JsonWidgetData? oldWidget,
       [JsonWidgetData? newWidget]) {
-    var values = _widget!.toJson();
+    final values = _widget!.toJson();
 
-    var toReplace = findInValues(values, oldWidget);
+    final toReplace = findInValues(values, oldWidget);
     toReplace.clear();
 
     if (newWidget != null) {

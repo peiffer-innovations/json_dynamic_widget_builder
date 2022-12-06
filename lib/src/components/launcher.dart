@@ -39,8 +39,8 @@ class Launcher {
       }
     });
 
-    var deviceRegistry = SimulatedDeviceRegistry();
-    var deviceJson = await rootBundle.loadString('assets/devices.json');
+    final deviceRegistry = SimulatedDeviceRegistry();
+    final deviceJson = await rootBundle.loadString('assets/devices.json');
     deviceRegistry.addDevices(
       JsonClass.fromDynamicList(
         json.decode(deviceJson),
@@ -48,23 +48,23 @@ class Launcher {
       ),
     );
 
-    var schemaBloc = SchemaBloc();
-    var sembastBloc = SembastBloc();
-    var widgetTreeBloc = WidgetTreeBloc();
+    final schemaBloc = SchemaBloc();
+    final sembastBloc = SembastBloc();
+    final widgetTreeBloc = WidgetTreeBloc();
 
-    var sCache = SchemaCache();
+    final sCache = SchemaCache();
     sCache.addSchemas(JsonDynamicWidgetSchemas.all);
     sCache.addSchemas(Schemas.all);
 
     await sembastBloc.initialize();
 
-    var db = sembastBloc.getDatabase(SembastBloc.db_variables)!;
-    var store = StoreRef.main();
-    var registry = JsonWidgetRegistry.instance;
+    final db = sembastBloc.getDatabase(SembastBloc.db_variables)!;
+    final store = StoreRef.main();
+    final registry = JsonWidgetRegistry.instance;
     JsonSvgPlugin.bind(registry);
 
-    var query = store.query();
-    var snapshots = await query.getSnapshots(db);
+    final query = store.query();
+    final snapshots = await query.getSnapshots(db);
 
     for (var snapshot in snapshots) {
       registry.setValue(snapshot.key.toString(), snapshot.value);

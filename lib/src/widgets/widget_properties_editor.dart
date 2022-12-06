@@ -43,7 +43,7 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
     _schemaBloc = context.read<SchemaBloc>();
     _values = json.decode(json.encode(widget.data.args));
 
-    var schemaData = JsonDynamicWidgetSchemas.lookup(widget.data.type);
+    final schemaData = JsonDynamicWidgetSchemas.lookup(widget.data.type);
     if (schemaData != null) {
       _schema = _schemaBloc.getSchema(schemaData[r'$id']);
     }
@@ -58,8 +58,8 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
 
     return _schema == null
         ? Scaffold(
-            appBar: AppBar(title: Text('Properties')),
-            body: Center(
+            appBar: AppBar(title: const Text('Properties')),
+            body: const Center(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text('UNKNOWN SCHEMA'),
@@ -78,23 +78,23 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Divider(),
+                        const Divider(),
                         Flexible(
                           child: ClipRect(
                             child: TextButton(
                               onPressed: () {
-                                var nav = Navigator.of(context);
+                                final nav = Navigator.of(context);
                                 while (nav.canPop()) {
                                   nav.pop();
                                 }
                               },
-                              child: Text(
+                              child: const Text(
                                 'CANCEL',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -102,13 +102,13 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
                         Flexible(
                           child: ClipRect(
                             child: ElevatedButton(
                               onPressed: widget.onApply != null
                                   ? () {
-                                      var form = Form.of(context)!;
+                                      final form = Form.of(context);
                                       if (form.validate() == true) {
                                         form.save();
                                         FocusScope.of(context).requestFocus(
@@ -126,17 +126,17 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                                     }
                                   : () {
                                       try {
-                                        var form = Form.of(context)!;
+                                        final form = Form.of(context);
                                         if (form.validate() == true) {
                                           form.save();
                                           FocusScope.of(context).requestFocus(
                                             FocusNode(),
                                           );
-                                          var newData = _data!.copyWith(
+                                          final newData = _data!.copyWith(
                                             args: _values,
                                           );
 
-                                          var data = _widgetTreeBloc.replace(
+                                          final data = _widgetTreeBloc.replace(
                                             _data,
                                             newData,
                                           )!;
@@ -166,7 +166,7 @@ class _WidgetPropertiesEditorState extends State<WidgetPropertiesEditor> {
                                         );
                                       }
                                     },
-                              child: Text(
+                              child: const Text(
                                 'APPLY',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

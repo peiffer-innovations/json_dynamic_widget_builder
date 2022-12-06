@@ -47,7 +47,7 @@ class _ConsoleState extends State<Console> {
         _controller.animateTo(
           _controller.position.maxScrollExtent,
           curve: Curves.linear,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
         );
       });
     }));
@@ -68,22 +68,22 @@ class _ConsoleState extends State<Console> {
         children: [
           Container(
             height: 24.0,
-            padding: EdgeInsets.all(4),
+            padding: const EdgeInsets.all(4),
             child: Row(
               children: [
-                Text(
+                const Text(
                   'CONSOLE',
                   style: TextStyle(
                     fontSize: 12.0,
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   child: SizedBox(
                     width: 16.0,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.delete,
                   ),
                   iconSize: 16.0,
@@ -92,18 +92,18 @@ class _ConsoleState extends State<Console> {
                     _lines = [];
                     setState(() {});
                   },
-                  padding: EdgeInsets.fromLTRB(4.0, 2.0, 4.0, 2.0),
+                  padding: const EdgeInsets.fromLTRB(4.0, 2.0, 4.0, 2.0),
                 ),
               ],
             ),
           ),
-          Divider(height: 8.0),
+          const Divider(height: 8.0),
           Expanded(
             child: ListView.builder(
               controller: _controller,
               itemBuilder: (BuildContext context, int index) => Text(
                 _lines[index],
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Courier New',
                   fontFamilyFallback: ['monospace', 'Courier'],
                 ),

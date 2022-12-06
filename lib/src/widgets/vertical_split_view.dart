@@ -77,7 +77,7 @@ class _VerticalSplitViewState extends State<VerticalSplitView> {
                       TinyColor(Theme.of(context).canvasColor).darken(5).color,
                   height: constraints.maxHeight,
                   width: _dividerWidth,
-                  child: RotationTransition(
+                  child: const RotationTransition(
                     turns: AlwaysStoppedAnimation(0.25),
                     child: Icon(Icons.drag_handle),
                   ),

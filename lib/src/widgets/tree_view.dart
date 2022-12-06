@@ -48,7 +48,7 @@ class _TreeViewState extends State<TreeView>
   }
 
   List<Widget> _buildTree(JsonWidgetData data, {int depth = 0}) {
-    var widgets = <Widget>[];
+    final widgets = <Widget>[];
 
     var text = ''.padLeft(depth);
     text += data.type;
@@ -79,7 +79,7 @@ class _TreeViewState extends State<TreeView>
           text,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: 'Courier New',
             fontFamilyFallback: ['monospace', 'Courier'],
           ),
@@ -126,14 +126,14 @@ class _TreeViewState extends State<TreeView>
 
   @override
   Widget build(BuildContext context) {
-    var numSupportedChildren =
+    final numSupportedChildren =
         _widgetTreeBloc.current?.builder().numSupportedChildren ?? 0;
-    var actualChildren = _widgetTreeBloc.current?.children?.length ?? 0;
+    final actualChildren = _widgetTreeBloc.current?.children?.length ?? 0;
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: Icon(Icons.folder_open),
+            icon: const Icon(Icons.folder_open),
             onPressed: () async {
               // var myFile = await FilePickerCross.importFromStorage(
               //   type: FileTypeCross.custom,
@@ -156,7 +156,7 @@ class _TreeViewState extends State<TreeView>
             tooltip: 'LOAD WIDGET',
           ),
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _widgetTreeBloc.widget == null
                 ? null
                 : () async {
@@ -176,24 +176,24 @@ class _TreeViewState extends State<TreeView>
             tooltip: 'SAVE WIDGET',
           ),
           IconButton(
-            icon: Icon(Icons.create_new_folder),
+            icon: const Icon(Icons.create_new_folder),
             onPressed: () async {
               if (_widgetTreeBloc.widget != null) {
-                var result = await showDialog<bool>(
+                final result = await showDialog<bool>(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: Text('CANCEL'),
+                          child: const Text('CANCEL'),
                         ),
                         ElevatedButton(
                           onPressed: () => Navigator.of(context).pop(true),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
                           ),
-                          child: Text('CLEAR'),
+                          child: const Text('CLEAR'),
                         ),
                       ],
                       content: Column(
@@ -201,16 +201,16 @@ class _TreeViewState extends State<TreeView>
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Icon(
+                          const Icon(
                             Icons.warning,
                             size: 64.0,
                           ),
-                          SizedBox(height: 16.0),
-                          Text(
+                          const SizedBox(height: 16.0),
+                          const Text(
                               'Clear current widget data and create a blank tree?'),
                         ],
                       ),
-                      title: Text('ARE YOU SURE?'),
+                      title: const Text('ARE YOU SURE?'),
                     );
                   },
                 );
@@ -222,13 +222,13 @@ class _TreeViewState extends State<TreeView>
             tooltip: 'NEW WIDGET TREE',
           )
         ],
-        title: Text('Widget Tree'),
+        title: const Text('Widget Tree'),
       ),
       body: _widgetTreeBloc.widget == null
           ? Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  var data = await Navigator.of(context).push(
+                  final data = await Navigator.of(context).push(
                     MaterialPageRoute<JsonWidgetData>(
                       builder: (BuildContext context) => SupportedWidgetsList(),
                     ),
@@ -252,7 +252,7 @@ class _TreeViewState extends State<TreeView>
                     );
                   }
                 },
-                child: Text('ADD WIDGET'),
+                child: const Text('ADD WIDGET'),
               ),
             )
           : Column(
@@ -263,17 +263,17 @@ class _TreeViewState extends State<TreeView>
                   ),
                 ),
                 AnimatedSize(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   child: _widgetTreeBloc.current == null
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisAlignment: MainAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Divider(),
+                              const Divider(),
                               Flexible(
                                 child: ClipRect(
                                   child: ElevatedButton.icon(
@@ -283,12 +283,12 @@ class _TreeViewState extends State<TreeView>
                                         Colors.redAccent,
                                       ),
                                     ),
-                                    icon: Flexible(
+                                    icon: const Flexible(
                                       child: ClipRect(
                                         child: Icon(Icons.delete),
                                       ),
                                     ),
-                                    label: Flexible(
+                                    label: const Flexible(
                                       child: Text(
                                         'REMOVE WIDGET',
                                         maxLines: 1,
@@ -296,7 +296,7 @@ class _TreeViewState extends State<TreeView>
                                       ),
                                     ),
                                     onPressed: () {
-                                      var parent =
+                                      final parent =
                                           _widgetTreeBloc.findParentOfWidget(
                                         _widgetTreeBloc.widget,
                                         _widgetTreeBloc.current!.id,
@@ -317,16 +317,16 @@ class _TreeViewState extends State<TreeView>
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 16.0),
+                              const SizedBox(height: 16.0),
                               Flexible(
                                 child: ClipRect(
                                   child: ElevatedButton.icon(
-                                    icon: Flexible(
+                                    icon: const Flexible(
                                       child: ClipRect(
                                         child: Icon(Icons.add_circle),
                                       ),
                                     ),
-                                    label: Flexible(
+                                    label: const Flexible(
                                       child: Text(
                                         'ADD CHILD',
                                         maxLines: 1,
@@ -337,7 +337,7 @@ class _TreeViewState extends State<TreeView>
                                             numSupportedChildren >
                                                 actualChildren
                                         ? () async {
-                                            var data =
+                                            final data =
                                                 await Navigator.of(context)
                                                     .push(
                                               MaterialPageRoute<JsonWidgetData>(
@@ -356,7 +356,7 @@ class _TreeViewState extends State<TreeView>
                                                     data: data,
                                                     onApply:
                                                         (JsonWidgetData data) {
-                                                      var newData =
+                                                      final newData =
                                                           _widgetTreeBloc
                                                               .addWidget(
                                                         _widgetTreeBloc
@@ -380,16 +380,16 @@ class _TreeViewState extends State<TreeView>
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 16.0),
+                              const SizedBox(height: 16.0),
                               Flexible(
                                 child: ClipRect(
                                   child: ElevatedButton.icon(
-                                    icon: Flexible(
+                                    icon: const Flexible(
                                       child: ClipRect(
                                         child: Icon(Icons.edit),
                                       ),
                                     ),
-                                    label: Flexible(
+                                    label: const Flexible(
                                       child: Text(
                                         'EDIT',
                                         maxLines: 1,

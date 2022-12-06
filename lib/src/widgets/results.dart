@@ -32,8 +32,8 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var deviceRegistry = SimulatedDeviceRegistry();
-    var devices = deviceRegistry.devices;
+    final deviceRegistry = SimulatedDeviceRegistry();
+    final devices = deviceRegistry.devices;
 
     return Material(
       child: Column(
@@ -41,10 +41,10 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
           Row(
             children: [
               Container(
-                padding: EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 8.0),
-                child: Text('VIEW'),
+                padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 8.0),
+                child: const Text('VIEW'),
               ),
-              SizedBox(width: 16.0),
+              const SizedBox(width: 16.0),
               Expanded(
                 child: Container(
                   alignment: Alignment.centerRight,
@@ -56,9 +56,9 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                       child: Row(
                         children: [
                           AnimatedSwitcher(
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             child: _index != 0 || _device == null
-                                ? SizedBox()
+                                ? const SizedBox()
                                 : ToggleButtons(
                                     borderRadius: BorderRadius.circular(32.0),
                                     isSelected: [
@@ -69,7 +69,7 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                       () => _landscape = index == 0,
                                     ),
                                     children: [
-                                      Tooltip(
+                                      const Tooltip(
                                         message: 'LANDSCAPE',
                                         child: Padding(
                                           padding: EdgeInsets.all(16.0),
@@ -77,7 +77,7 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                               Icons.stay_current_landscape),
                                         ),
                                       ),
-                                      Tooltip(
+                                      const Tooltip(
                                         message: 'PORTRAIT',
                                         child: Padding(
                                           padding: EdgeInsets.all(16.0),
@@ -88,11 +88,11 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                           ),
-                          SizedBox(width: 16.0),
+                          const SizedBox(width: 16.0),
                           AnimatedSwitcher(
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             child: _index != 0
-                                ? SizedBox()
+                                ? const SizedBox()
                                 : ToggleButtons(
                                     borderRadius: BorderRadius.circular(32.0),
                                     isSelected: [
@@ -105,17 +105,17 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                           () => _strictSize = !_strictSize,
                                         );
                                       } else {
-                                        var device = await showDialog(
+                                        final device = await showDialog(
                                           context: context,
                                           builder: (BuildContext context) =>
                                               SimpleDialog(
-                                            title: Text('SELECT DEVICE'),
+                                            title: const Text('SELECT DEVICE'),
                                             children: [
                                               ListTile(
                                                 onTap: () =>
                                                     Navigator.of(context)
                                                         .pop(false),
-                                                title: Text('NONE'),
+                                                title: const Text('NONE'),
                                               ),
                                               ...[
                                                 for (var device in devices)
@@ -129,7 +129,7 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                                     title: Text(device.name),
                                                     trailing: device.name ==
                                                             _device?.name
-                                                        ? Icon(
+                                                        ? const Icon(
                                                             Icons.check_circle,
                                                             color: Colors.green,
                                                           )
@@ -157,13 +157,13 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                             ? 'FILL VIEWPORT'
                                             : 'USE ACTUAL DIPS',
                                         child: Padding(
-                                          padding: EdgeInsets.all(16.0),
+                                          padding: const EdgeInsets.all(16.0),
                                           child: Icon(_strictSize == true
                                               ? Icons.fullscreen_exit
                                               : Icons.fullscreen),
                                         ),
                                       ),
-                                      Tooltip(
+                                      const Tooltip(
                                         message: 'SELECT SIMULATED DEVICE',
                                         child: Padding(
                                           padding: EdgeInsets.all(16.0),
@@ -173,11 +173,11 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                           ),
-                          SizedBox(width: 16.0),
+                          const SizedBox(width: 16.0),
                           AnimatedSwitcher(
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             child: _index != 0 && _index != 1
-                                ? SizedBox()
+                                ? const SizedBox()
                                 : ToggleButtons(
                                     borderRadius: BorderRadius.circular(32.0),
                                     isSelected: [
@@ -189,14 +189,14 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                       setState(() {});
                                     },
                                     children: [
-                                      Tooltip(
+                                      const Tooltip(
                                         message: 'SHOW ENTIRE TREE',
                                         child: Padding(
                                           padding: EdgeInsets.all(16.0),
                                           child: Text('ALL'),
                                         ),
                                       ),
-                                      Tooltip(
+                                      const Tooltip(
                                         message:
                                             'SHOW ONLY THE CURRENTLY SELECTED WIDGET',
                                         child: Padding(
@@ -207,7 +207,7 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                           ),
-                          SizedBox(width: 16.0),
+                          const SizedBox(width: 16.0),
                           ToggleButtons(
                             borderRadius: BorderRadius.circular(32.0),
                             isSelected: [
@@ -220,21 +220,21 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                               setState(() {});
                             },
                             children: [
-                              Tooltip(
+                              const Tooltip(
                                 message: 'SHOW RENDERED WIDGETS',
                                 child: Padding(
                                   padding: EdgeInsets.all(16.0),
                                   child: Text('VISUAL'),
                                 ),
                               ),
-                              Tooltip(
+                              const Tooltip(
                                 message: 'SHOW JSON DATA',
                                 child: Padding(
                                   padding: EdgeInsets.all(16.0),
                                   child: Text('JSON'),
                                 ),
                               ),
-                              Tooltip(
+                              const Tooltip(
                                 message: 'SHOW VARIABLE VALUES',
                                 child: Padding(
                                   padding: EdgeInsets.all(16.0),
@@ -251,7 +251,7 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
               ),
             ],
           ),
-          Divider(
+          const Divider(
             height: 1.0,
           ),
           Expanded(
