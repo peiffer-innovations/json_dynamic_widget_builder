@@ -17,11 +17,13 @@ dependencies:
   #file_picker_cross: ^4.3.0
   flutter:
     sdk: flutter
+  flutter_code_editor: ^0.2.10
   flutter_markdown: ^0.6.10
   form_validation: ^2.1.0+2
   json_class: ^2.1.2+4
   json_conditional: ^2.1.0+3
   json_dynamic_widget: '^6.0.0'
+  json_dynamic_widget_plugin_font_awesome: ^3.0.1+2
   json_dynamic_widget_plugin_svg: ^3.0.0
   json_schema2: ^2.0.2
   json_theme: '^5.0.0'
@@ -36,11 +38,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-#dependency_overrides:
-#   json_dynamic_widget:
-#     path: ../json_dynamic_widget
-#   json_theme:
-#     path: ../json_theme
+dependency_overrides:
+  json_dynamic_widget:
+    path: ../json_dynamic_widget
+  json_theme:
+    path: ../json_theme
 
 ignore_updates:
   - 'archive'

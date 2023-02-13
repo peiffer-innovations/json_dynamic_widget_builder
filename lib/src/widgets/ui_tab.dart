@@ -50,8 +50,8 @@ class _UiTabState extends State<UiTab> {
   }
 
   @override
-  void didUpdateWidget(Widget oldWidget) {
-    super.didUpdateWidget(oldWidget as UiTab);
+  void didUpdateWidget(UiTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
     _rebuild();
   }

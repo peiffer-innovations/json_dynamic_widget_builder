@@ -43,12 +43,10 @@ class _ConsoleState extends State<Console> {
         setState(() {});
       }
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _controller.animateTo(
-          _controller.position.maxScrollExtent,
-          curve: Curves.linear,
-          duration: const Duration(milliseconds: 300),
-        );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _controller.positions.isNotEmpty) {
+          _controller.jumpTo(_controller.position.maxScrollExtent);
+        }
       });
     }));
   }

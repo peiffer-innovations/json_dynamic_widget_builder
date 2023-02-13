@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_dynamic_widget_builder/src/models/simulated_device.dart';
 import 'package:json_dynamic_widget_builder/src/models/simulated_device_registry.dart';
-import 'package:json_dynamic_widget_builder/src/widgets/animated_indexed_stack.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/json_tab.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/ui_tab.dart';
 import 'package:json_dynamic_widget_builder/src/widgets/variables_tab.dart';
@@ -89,124 +88,117 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
                                   ),
                           ),
                           const SizedBox(width: 16.0),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            child: _index != 0
-                                ? const SizedBox()
-                                : ToggleButtons(
-                                    borderRadius: BorderRadius.circular(32.0),
-                                    isSelected: [
-                                      _strictSize,
-                                      _device != null,
-                                    ],
-                                    onPressed: (int index) async {
-                                      if (index == 0) {
-                                        setState(
-                                          () => _strictSize = !_strictSize,
-                                        );
-                                      } else {
-                                        final device = await showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              SimpleDialog(
-                                            title: const Text('SELECT DEVICE'),
-                                            children: [
-                                              ListTile(
-                                                onTap: () =>
-                                                    Navigator.of(context)
-                                                        .pop(false),
-                                                title: const Text('NONE'),
-                                              ),
-                                              ...[
-                                                for (var device in devices)
-                                                  ListTile(
-                                                    onTap: () =>
-                                                        Navigator.of(context)
-                                                            .pop(device),
-                                                    subtitle: Text(
-                                                      '${device!.dips.width.toInt()} x ${device.dips.height.toInt()}',
-                                                    ),
-                                                    title: Text(device.name),
-                                                    trailing: device.name ==
-                                                            _device?.name
-                                                        ? const Icon(
-                                                            Icons.check_circle,
-                                                            color: Colors.green,
-                                                          )
-                                                        : null,
+                          _index != 0
+                              ? const SizedBox()
+                              : ToggleButtons(
+                                  borderRadius: BorderRadius.circular(32.0),
+                                  isSelected: [
+                                    _strictSize,
+                                    _device != null,
+                                  ],
+                                  onPressed: (int index) async {
+                                    if (index == 0) {
+                                      setState(
+                                        () => _strictSize = !_strictSize,
+                                      );
+                                    } else {
+                                      final device = await showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            SimpleDialog(
+                                          title: const Text('SELECT DEVICE'),
+                                          children: [
+                                            ListTile(
+                                              onTap: () => Navigator.of(context)
+                                                  .pop(false),
+                                              title: const Text('NONE'),
+                                            ),
+                                            ...[
+                                              for (var device in devices)
+                                                ListTile(
+                                                  onTap: () =>
+                                                      Navigator.of(context)
+                                                          .pop(device),
+                                                  subtitle: Text(
+                                                    '${device!.dips.width.toInt()} x ${device.dips.height.toInt()}',
                                                   ),
-                                              ],
+                                                  title: Text(device.name),
+                                                  trailing: device.name ==
+                                                          _device?.name
+                                                      ? const Icon(
+                                                          Icons.check_circle,
+                                                          color: Colors.green,
+                                                        )
+                                                      : null,
+                                                ),
                                             ],
-                                          ),
-                                        );
+                                          ],
+                                        ),
+                                      );
 
-                                        if (device != null) {
-                                          if (device == false) {
-                                            _device = null;
-                                          } else {
-                                            _device = device;
-                                          }
-
-                                          setState(() {});
+                                      if (device != null) {
+                                        if (device == false) {
+                                          _device = null;
+                                        } else {
+                                          _device = device;
                                         }
+
+                                        setState(() {});
                                       }
-                                    },
-                                    children: [
-                                      Tooltip(
-                                        message: _strictSize == true
-                                            ? 'FILL VIEWPORT'
-                                            : 'USE ACTUAL DIPS',
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Icon(_strictSize == true
-                                              ? Icons.fullscreen_exit
-                                              : Icons.fullscreen),
-                                        ),
+                                    }
+                                  },
+                                  children: [
+                                    Tooltip(
+                                      message: _strictSize == true
+                                          ? 'FILL VIEWPORT'
+                                          : 'USE ACTUAL DIPS',
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Icon(_strictSize == true
+                                            ? Icons.fullscreen_exit
+                                            : Icons.fullscreen),
                                       ),
-                                      const Tooltip(
-                                        message: 'SELECT SIMULATED DEVICE',
-                                        child: Padding(
-                                          padding: EdgeInsets.all(16.0),
-                                          child: Icon(Icons.phone_android),
-                                        ),
+                                    ),
+                                    const Tooltip(
+                                      message: 'SELECT SIMULATED DEVICE',
+                                      child: Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Icon(Icons.phone_android),
                                       ),
-                                    ],
-                                  ),
-                          ),
+                                    ),
+                                  ],
+                                ),
                           const SizedBox(width: 16.0),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            child: _index != 0 && _index != 1
-                                ? const SizedBox()
-                                : ToggleButtons(
-                                    borderRadius: BorderRadius.circular(32.0),
-                                    isSelected: [
-                                      _all,
-                                      !_all,
-                                    ],
-                                    onPressed: (int index) {
-                                      _all = index == 0;
-                                      setState(() {});
-                                    },
-                                    children: [
-                                      const Tooltip(
-                                        message: 'SHOW ENTIRE TREE',
-                                        child: Padding(
-                                          padding: EdgeInsets.all(16.0),
-                                          child: Text('ALL'),
-                                        ),
+                          _index != 0 && _index != 1
+                              ? const SizedBox()
+                              : ToggleButtons(
+                                  borderRadius: BorderRadius.circular(32.0),
+                                  isSelected: [
+                                    _all,
+                                    !_all,
+                                  ],
+                                  onPressed: (int index) {
+                                    _all = index == 0;
+                                    setState(() {});
+                                  },
+                                  children: [
+                                    const Tooltip(
+                                      message: 'SHOW ENTIRE TREE',
+                                      child: Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Text('ALL'),
                                       ),
-                                      const Tooltip(
-                                        message:
-                                            'SHOW ONLY THE CURRENTLY SELECTED WIDGET',
-                                        child: Padding(
-                                          padding: EdgeInsets.all(16.0),
-                                          child: Text('SELECTED'),
-                                        ),
+                                    ),
+                                    const Tooltip(
+                                      message:
+                                          'SHOW ONLY THE CURRENTLY SELECTED WIDGET',
+                                      child: Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Text('SELECTED'),
                                       ),
-                                    ],
-                                  ),
-                          ),
+                                    ),
+                                  ],
+                                ),
                           const SizedBox(width: 16.0),
                           ToggleButtons(
                             borderRadius: BorderRadius.circular(32.0),
@@ -255,7 +247,7 @@ class _ResultsState extends State<Results> with SingleTickerProviderStateMixin {
             height: 1.0,
           ),
           Expanded(
-            child: AnimatedIndexedStack(
+            child: IndexedStack(
               index: _index,
               children: [
                 UiTab(

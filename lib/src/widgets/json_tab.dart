@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_code_editor/flutter_code_editor.dart';
+import 'package:flutter_highlight/themes/dracula.dart';
+import 'package:highlight/languages/json.dart' as l;
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:json_dynamic_widget_builder/src/bloc/widget_tree_bloc.dart';
 import 'package:logging/logging.dart';
@@ -22,12 +25,15 @@ class JsonTab extends StatefulWidget {
 class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
   static final Logger _logger = Logger('Ui');
 
-  final TextEditingController _controller = TextEditingController();
+  final CodeController _controller = CodeController(
+    language: l.json,
+  );
   final List<StreamSubscription> _subscriptions = [];
 
   late AnimationController _animationController;
   // String _error;
   String _text = '';
+  Timer? _timer;
   late WidgetTreeBloc _widgetTreeBloc;
 
   @override
@@ -71,6 +77,19 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
       }
     });
 
+    _controller.addListener(() {
+      _timer?.cancel();
+
+      _timer = Timer(const Duration(milliseconds: 200), () {
+        final value = _controller.text;
+
+        if (value != _text) {
+          _text = value;
+          _rebuild();
+        }
+      });
+    });
+
     _subscriptions.add(_widgetTreeBloc.stream!.listen((event) {
       _rebuild();
 
@@ -90,7 +109,6 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _controller.dispose();
     _subscriptions.forEach((sub) => sub.cancel());
     _subscriptions.clear();
 
@@ -98,13 +116,12 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
   }
 
   void _rebuild() {
+    final selection = _controller.selection;
     try {
       final widget = this.widget.all == true
           ? _widgetTreeBloc.widget
           : _widgetTreeBloc.current;
-      if (widget == null) {
-        _text = '';
-      } else {
+      if (widget != null) {
         _text = const JsonEncoder.withIndent('  ').convert(
           widget.toJson(),
         );
@@ -114,6 +131,7 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
     }
 
     _controller.text = _text;
+    _controller.setCursor(selection.baseOffset);
 
     if (mounted == true) {
       setState(() {});
@@ -125,19 +143,19 @@ class _JsonTabState extends State<JsonTab> with SingleTickerProviderStateMixin {
     return Stack(
       children: [
         SizedBox.expand(
-          child: TextFormField(
-            controller: _controller,
-            expands: true,
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
-            minLines: null,
-            onChanged: (value) {
-              _text = value;
-              _animationController.forward(from: 0.0);
-            },
-            style: const TextStyle(
-              fontFamily: 'Courier New',
-              fontFamilyFallback: ['monospace', 'Courier'],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: CodeTheme(
+              data: CodeThemeData(styles: draculaTheme),
+              child: SingleChildScrollView(
+                child: CodeField(
+                  controller: _controller,
+                  textStyle: const TextStyle(
+                    fontFamily: 'Courier New',
+                    fontFamilyFallback: ['monospace', 'Courier'],
+                  ),
+                ),
+              ),
             ),
           ),
         ),
