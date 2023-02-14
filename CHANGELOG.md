@@ -1,3 +1,8 @@
+## [0.9.2] - February 13rd, 2023
+
+* Bug Fixes
+
+
 ## [0.9.1+1] - January 3rd, 2022
 
 * Dependency Updates

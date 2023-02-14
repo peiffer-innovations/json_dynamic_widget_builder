@@ -4,7 +4,7 @@ homepage: https://github.com/peiffer-innovations/json_dynamic_widget_builder
 
 publish_to: 'none'
 
-version: 0.9.1+1
+version: 0.9.2+1
 
 environment:
   sdk: '>=2.19.0 <4.0.0'
