@@ -7,7 +7,7 @@ publish_to: 'none'
 version: 0.9.2
 
 environment:
-  sdk: '>=2.19.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 analyzer:
   exclude: [lib/generated_plugin_registrant.dart]
@@ -38,11 +38,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-dependency_overrides:
-  json_dynamic_widget:
-    path: ../json_dynamic_widget
-  json_theme:
-    path: ../json_theme
+#dependency_overrides:
+#  json_dynamic_widget:
+#    path: ../json_dynamic_widget
+#  json_theme:
+#    path: ../json_theme
 
 ignore_updates:
   - 'archive'
