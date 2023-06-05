@@ -19,7 +19,7 @@ dependencies:
     sdk: flutter
   flutter_code_editor: ^0.2.10
   flutter_markdown: ^0.6.10
-  form_validation: ^2.1.0+2
+  form_validation: ^3.0.1
   json_class: ^2.1.2+4
   json_conditional: ^2.1.0+3
   json_dynamic_widget: '^6.0.0'
