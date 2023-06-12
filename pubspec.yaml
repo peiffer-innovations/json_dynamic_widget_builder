@@ -17,7 +17,7 @@ dependencies:
   #file_picker_cross: ^4.3.0
   flutter:
     sdk: flutter
-  flutter_code_editor: ^0.2.10
+  flutter_code_editor: ^0.3.0
   flutter_markdown: ^0.6.10
   form_validation: ^2.1.0+2
   json_class: ^2.1.2+4
