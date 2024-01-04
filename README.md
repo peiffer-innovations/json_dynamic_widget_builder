@@ -10,7 +10,9 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# WORK IN PROGRESS -- not production ready
+# ARCHIVED
+
+As of version 7, the way the widget tree is built is completely changed and being honest with myself, I'm never going to get around to fixing this as it was always, at best, a hobby package.
 
 # json_dynamic_widget_builder
 
